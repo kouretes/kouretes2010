@@ -1,0 +1,6 @@
+<?xml version="1.0" ?>
+<tree>
+  <node parent="none">global</node>
+  <node parent="global">motion</node>
+  <node parent="motion">score</node>
+</tree>
