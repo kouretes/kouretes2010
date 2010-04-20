@@ -1,5 +1,5 @@
 /**
- * @file Main.cpp
+ * @file krobot.cpp
  * */
 
 #include <sys/types.h>
@@ -21,7 +21,6 @@
 
 using namespace AL;
 using namespace std;
-float scaleL = 1;
 
 void _terminationHandler(int signum) {
 	std::cout << "Exiting Kouretes." << std::endl;
@@ -29,11 +28,8 @@ void _terminationHandler(int signum) {
 	exit(0);
 }
 
-
 int main(int argc, char *argv[]) {
-	std::cout << "..::: Test Localise :::.." << std::endl;
-
-	//SleepMs(10000);
+	std::cout << "..::: Kouretes Robot :::.." << std::endl;
 
 	int i = 1;
 	std::string brokerName = "Robot";
@@ -71,8 +67,8 @@ int main(int argc, char *argv[]) {
 		MotionController mc(broker);
 		mc.start();
 		SleepMs(1000);
+		mc.join();
 
-		
 		cout << "EXITING TEST" << endl;
 		exit(0);
 
@@ -101,6 +97,6 @@ int main(int argc, char *argv[]) {
 # ifdef _WIN32
 	_terminationHandler( 0 );
 # endif
-	
+
 	exit(0);
 }
