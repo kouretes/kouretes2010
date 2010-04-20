@@ -15,18 +15,23 @@
 
 class MotionController : public Thread, public Publisher, public Subscriber{
   public:
+
+	AL::ALPtr<AL::ALMotionProxy> motion;
     MotionController(AL::ALPtr<AL::ALBroker> pbroker){
      
 
     try {
-			AL::ALPtr<AL::ALMotionProxy> motion = pbroker->getMotionProxy();
+			 motion = pbroker->getMotionProxy();
 		} catch (AL::ALError& e) {
 		  ;
 		}
     }
     void run(){
       std::cout << " MotionController Runs test" << std::endl;
-      sleep(1);
+	motion->setWalkTargetVelocity(0.5, 0.5, 0.5, 0.5);
+      sleep(10);
+	motion->killWalk();
+	      sleep(10);
       }
   private:
 
