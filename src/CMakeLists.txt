@@ -10,7 +10,7 @@ include_directories(${NARUKOM_INCLUDE_DIR} ./)
 
 add_subdirectory(narukom)
 
-
+add_subdirectory(messages)
 MESSAGE( STATUS "Compiling Vision")
 add_subdirectory(vision)
 
@@ -30,5 +30,5 @@ add_subdirectory(localization)
 add_library(kouretes_lib krobot.cpp)
 add_executable(kouretes_bin krobot.cpp)
 
-target_link_libraries(kouretes_bin narukom motion vision behavior sensors localization)
+target_link_libraries(kouretes_bin messages narukom motion vision behavior sensors localization)
 use_lib(kouretes_bin ALCOMMON ALVALUE ALMATH LIBCORE TOOLS )

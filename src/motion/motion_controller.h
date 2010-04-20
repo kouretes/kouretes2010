@@ -10,7 +10,7 @@
 #include "almotionproxy.h"
 #include "albrokermanager.h"
 #include "alptr.h"
-
+#include "messages/motion.pb.h"
 
 
 class MotionController : public Thread, public Publisher, public Subscriber{
@@ -34,7 +34,7 @@ class MotionController : public Thread, public Publisher, public Subscriber{
 	      sleep(10);
       }
   private:
-
+  MotionCommand command;
 
 };
 
