@@ -12,3 +12,26 @@ tutorial how to create ssh keys and adding them to your github account
 http://help.github.com/linux-key-setup/
 
 Thank you
+
+Compiling
+
+Προσοχή! Η μέθοδος ενδέχεται να αλλάξει
+
+θα χρειαστούμε το aldebaran-sdk-v1.6.0-linux.tar.gz για να κάνουμε compile για το pc 
+και το crosstoolchain για το ρομπότ
+
+Δημιουργούμε τον σύνδεσμο μέσα στο φάκελο external "naoqi" στο φάκελο του sdk.
+Στο 1ο επίπεδο (δίπλα στο src) φτιάχνουμε ένα φάκελο build (mkdir build)
+μπραίνουμε μέσα και εκτελούμε
+
+ cmake -D CMAKE_TOOLCHAIN_FILE=../external/naoqi/toolchain-pc.cmake -DTARGET_PLAT=nao ../
+
+Αν όλα πήγαν καλά εκτελούμε make
+
+και μετά από λίγο σε ένα φάκελο θα εμφανιστεί ένας φάκελος bin και μέσα του το εκτελέσιμό μας !! kouretes_bin
+δέχεται παραμέτρους αλλά default συνδέεται στο 127.0.0.1 και στο port 5961 (webots).
+
+p.s. πιθανός να χρειαστείτε το protobuffer.zip (internall files) που έχει τα deb (από το debian νομίζω τα είχα πάρει) για να τρέχει στο pc σας. Άν έχετε σκοπό να δημιουργήσετε νέο τύπο μηνυμάτων θα χρειαστείτε τον proto compile "protoc" από το παραπάνω zip
+
+
+
