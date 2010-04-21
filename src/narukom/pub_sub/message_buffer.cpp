@@ -19,7 +19,7 @@
 */
 
 #include "message_buffer.h"
-#include "Basic.pb.h"
+#include "messages/Basic.pb.h"
 #include <iostream>
 using namespace std;
 using google::protobuf::Message;

@@ -1,1 +1,2 @@
 set(TICPP_LIBRARIES ${EXTERNAL_DIR}/nao/libticppd.so)
+set(TICPP_INCLUDE_DIR ${EXTERNAL_DIR}/ticpp)

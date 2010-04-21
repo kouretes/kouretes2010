@@ -1,8 +1,8 @@
 #ifndef MOTION_CONTROLLER_H
 #define MOTION_CONTROLLER_H
-#include "narukom/system/Thread.h"
-#include "narukom/pub_sub/publisher.h"
-#include "narukom/pub_sub/subscriber.h"
+#include "system/Thread.h"
+#include "pub_sub/publisher.h"
+#include "pub_sub/subscriber.h"
 #include "alxplatform.h"
 #include <albroker.h>
 #include <alproxy.h>

@@ -1,0 +1,86 @@
+#include <iostream>
+
+#include <string>
+#include <vector>
+#include <sstream>
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include "pub_sub/blackboard.h"
+#include "messages/Basic.pb.h"
+using namespace std;
+using namespace google::protobuf;
+int main(int argc, char **argv) {
+   
+    std::cout << "Blackboard_test Application" << std::endl;
+
+
+    int num_of_modules = 10;
+    int num_of_msg = 1;
+    
+  
+   std::vector<std::string>* hosts;
+	 std::vector<std::string>* pub;
+    std::vector<std::string>* topic ;
+    std::vector<boost::posix_time::ptime> chrono;
+    std::vector<int>* timeouts;
+		std::string shosts[] = {"1","2","3","4","5","6","7","8","9","10","11","12","13","14","15"  };
+		std::string pubss[] = {"1","2","3","4","5","6","7","8","9","10","11","12","13","14","15"  };
+    std::string stopic[] = {"global","motion", "score" , "AFAFDFA" };
+   cout << "HERE " << 1 << endl;
+		pub = new std::vector<std::string>(pubss, pubss + 15);
+		hosts = new std::vector<std::string>(shosts, shosts + 15);
+   topic = new std::vector<std::string>(stopic,stopic + 4);
+    int tm[] = {100,200,300,400,500};
+    timeouts = new std::vector<int>(tm,tm + 5);
+		cout << "HERE " << 2 << endl;
+		cout << hosts->size() << " " << pub->size() << " " << topic->size() << " " << timeouts-> size() << endl;
+		Blackboard bb(new Agent("foo")) ;
+		string tsmp; 
+		BasicMessage* tmp;
+		int h = 0; int t = 0;int tp = 0; int ttt = 0;
+		vector<Tuple*> vtuple;
+		
+		for(int i =0; i < 15*15; i++)
+		{tmp = new BasicMessage;
+			tmp->set_host(hosts->at(h));
+		  tmp->set_publisher(pub->at(tp));
+			tmp->set_topic(topic->at(ttt));
+			tmp->set_timeout(i );
+			tsmp = boost::posix_time::to_iso_string(boost::posix_time::microsec_clock::local_time());
+			tmp->set_timestamp(tsmp);
+		
+ 			h = ++h % hosts->size();
+ 			tp = ++tp % pub->size();
+	    vtuple.push_back(new Tuple(tmp));
+			if(((tmp->host() == "3") && (tmp->publisher() == "3")))
+			{
+				chrono.push_back(boost::posix_time::from_iso_string(tmp->timestamp()));
+				cout << *vtuple.at(i) << endl;
+			}
+		if(((tmp->host() == "3") && (tmp->publisher() == "3")));
+		else
+		bb.add_tuple(vtuple[i]);
+			
+		string vags= "BasicMessage";
+		const string one("1");
+		const string tre("3");
+		
+		boost::posix_time::ptime query =  chrono[14]+boost::posix_time::millisec(1);
+		cout << "one: " << one << " tre " << tre <<" " << boost::posix_time::to_iso_string(chrono[14]) << " " << query<<  endl;
+		BasicMessage *result = (BasicMessage*)bb.read("BasicMessage",tre,tre);
+		cout << "DEBUG" << result->DebugString() << endl;
+
+cout << "Adding publishers to message queue " << endl;
+
+
+
+
+
+  cout << "Adding subscribers to message queue" << endl;
+
+	cout  << "Subscibing to topics" << endl;
+
+	cout << "Start Threads for all publishers and Subscribers" << endl;
+
+    cout << "After join " << endl;
+    return 0;
+}

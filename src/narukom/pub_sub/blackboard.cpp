@@ -51,7 +51,7 @@ Blackboard::Blackboard() : Subscriber(), myagent(NULL)
 		period = boost::posix_time::milliseconds(100);
 	cur_tmsp = boost::posix_time::microsec_clock::local_time();
 	int i;
-	std::cin >> i;
+//	std::cin >> i;
 	cout << "asfddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd" << endl;
 }
 

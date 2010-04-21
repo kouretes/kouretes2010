@@ -21,10 +21,10 @@
 #include "message_queue.h"
 #define TIXML_USE_TICPP
 #include <google/protobuf/descriptor.h>
-#include "../external/ticpp/ticpp.h"
-#include "../external/ticpp/ticpprc.h"
-#include "../external/ticpp/tinyxml.h"
-#include "../external/ticpp/tinystr.h"
+#include "ticpp.h"
+#include "ticpprc.h"
+#include "tinyxml.h"
+#include "tinystr.h"
 
 
 using std::map;

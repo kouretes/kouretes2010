@@ -6,7 +6,10 @@ add_subdirectory(communication)
 
 include("${KOURETES_DIR}/cmakemodules/narukom_ext.cmake")
 include("${KOURETES_DIR}/cmakemodules/narukom_srcs.cmake")
-include_directories(${NARUKOM_INCLUDE_DIR} ./)
+include_directories( ./ 
+${NARUKOM_DIR} 
+${PROTOBUF_INCLUDE_DIR} 
+${TICPP_INCLUDE_DIR})
 
 add_subdirectory(narukom)
 
