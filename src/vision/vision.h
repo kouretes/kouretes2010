@@ -1,18 +1,38 @@
  #ifndef VISION_H
  #define VISION_H
+  
+  #include <iostream>
+  #include <albroker.h>
+ 
+
+  //#include "albrokermanager.h"
+  #include "alptr.h"
+  #include <opencv/cv.h>
+
+  #include "KImageExtractor.h"
+
  
  class Vision{
- 
-  // Here put all the vision classes Initialize them....
-  //ObjectReco ob;
- /*	A simple example Initilize ObjectReconition
-  Vision(){
-    Initialize ObjRecognition and Start the tread...
-  ObjectReconition.start();
   
-  Do this for all the Threaded Objects
- }
- */
+    
+  	
+    Vision(AL::ALPtr<AL::ALBroker> pbroker):ext(pbroker){
+     
+      rawImage=ext.allocateImage();
+    
+    }
+    ~Vision()
+    {
+     
+    }
+    void run(){
+      std::cout << " MotionController Runs test" << std::endl;
+      }
+   private:
+    KImageExtractor ext;
+    IplImage *rawImage;
+    
+    
  };
  
  #endif
