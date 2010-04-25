@@ -4,7 +4,7 @@
 
 void MotionController::run() {
 	//std::cout << " MotionController START" << std::endl;
-	//mglrun();  /* Uncomment of action! */
+	mglrun();  /* Uncomment for action! */
 	//std::cout << " MotionController END" << std::endl;
 	return;
 }
@@ -14,43 +14,53 @@ void MotionController::run() {
 
 void MotionController::mglrun(){
 
+	counter++;
+	usleep(100000);
+	AccZvalue = memory->getData("Device/SubDeviceList/InertialSensor/AccZ/Sensor/Value");
+	//cout << counter << "  " << AccZvalue << "  " << robotUp << "  " << robotDown << std::endl;
+
 	if (robotDown) {
-		cout << "Will stand up in 2 seconds ... " << std::endl; 
-		sleep(2);
+		cout << "Will stand up now ... " << std::endl; 
 		motion->setStiffnesses("Body", 0.9);
 		ALstandUp();
-		sleep(10);
+		robotDown = false;
 		return;
 	}
+	
+	if (!robotUp && !robotDown) { 
+		if (AccZvalue > 8.5) {
+			robotUp = true;
+			cout << "Stood up ... " << std::endl;
+			sleep(1);
+			return;
+		}
+	}
 
-	float AccZvalue = memory->getData("Device/SubDeviceList/InertialSensor/AccZ/Sensor/Value");
-
-	if ( !robotDown && (AccZvalue < 1.0) ) {
+	if ( (!robotDown) && (AccZvalue < 5.5) ) {
 		cout << "Robot falling: Stiffness off" << std::endl;
 		motion->setStiffnesses("Body", 0.0);
+		robotUp = false; 
 		robotDown = true; 
-		if (walkPID != 0) {
-			motion->killWalk();
-			walkPID = 0; 
-		}
+		motion->post.killWalk();
+		walkPID = 0; 
+		sleep(2);
 		return;
 	}
 
-	if ( !robotDown && (walkPID==0) ) {
+	if ( robotUp && (walkPID==0) ) {
 		//walkPid = motion->post.setWalkTargetVelocity(0.5, 0.5, 0.5, 0.5);
-		walkPID = motion->post.walkTo(1.0, 0.0, 0.0);
-
+		float x = rand() / ((float) RAND_MAX);
+		float y = rand() / ((float) RAND_MAX);
+		float t = rand() / ((float) RAND_MAX);
+		cout << "WalkTo " << x << " " << y << " " << t << std::endl; 
+		walkPID = motion->post.walkTo(x, y, t);
 		std::cout << "   Walk ID: " << walkPID << std::endl;
 	}
-	else
-		counter++;
-	//sleep(1);
-	//std::cout << " i am running for " << counter << endl;	
 
-	if ( !robotDown && !motion->isRunning(walkPID) && !motion->walkIsActive() ) {
+	if ( robotUp && !motion->isRunning(walkPID) && !motion->walkIsActive() ) {
 		walkPID = 0;
 		std::cout << "   Walk finished " << counter << std::endl;
-		sleep(10);
+		sleep(5);
 		counter = 0;
 	}
 
@@ -63,24 +73,50 @@ void MotionController::mglrun(){
 }
 
 
+/*
+void MotionController::ALstandUp(){
+
+	float angleY;
+	
+	angleY = memory->getData("Device/SubDeviceList/InertialSensor/AngleY/Sensor/Value");
+	cout << "angleY " << angleY << std::endl;
+        
+        if ( (angleY >= 1.0) || (angleY <= -1.0) ) {
+		ALstandUpCross();
+		cout << "Stand Up: Cross" << std::endl;
+	}
+
+	angleY = memory->getData("Device/SubDeviceList/InertialSensor/AngleY/Sensor/Value");
+	cout << "angleY " << angleY << std::endl;
+        
+        if (angleY > 1.0) {
+		ALstandUpBack();
+		cout << "Stand Up: Back" << std::endl;
+	}
+	else if (angleY < -1.0) {
+		ALstandUpFront();
+		cout << "Stand Up: Front" << std::endl;
+	}
+	return;
+}
+*/
+
 
 void MotionController::ALstandUp(){
 
-	float AngleY = memory->getData("Device/SubDeviceList/InertialSensor/AngleY/Sensor/Value");
-        
-        if ( (AngleY > 1.0) || (AngleY < -1.0) ) {
-		ALstandUpCross();	
-	}
-	
-	sleep(3);
+	ALstandUpCross();
+	cout << "Stand Up: Cross" << std::endl;
 
-	AngleY = memory->getData("Device/SubDeviceList/InertialSensor/AngleY/Sensor/Value");
+	float AccXvalue = memory->getData("Device/SubDeviceList/InertialSensor/AccX/Sensor/Value");
+	cout << "AccXvalue " << AccXvalue << std::endl;
         
-        if (AngleY > 1.0) {
+        if (AccXvalue > 1.0) {
 		ALstandUpBack();
+		cout << "Stand Up: Back" << std::endl;
 	}
-	else if (AngleY < -1.0) {
+	else if (AccXvalue < -1.0) {
 		ALstandUpFront();
+		cout << "Stand Up: Front" << std::endl;
 	}
 	return;
 }
@@ -431,14 +467,24 @@ angles[16][7] = 0.01047f;
 times[16][7] = 8.40000f;
 
 jointCodes[17] = "RHipYawPitch";
-angles[17].arraySetSize(3);
-times[17].arraySetSize(3);
+angles[17].arraySetSize(8);
+times[17].arraySetSize(8);
 angles[17][0] = 0.00000f;
 times[17][0] = 1.40000f;
 angles[17][1] = 0.00000f;
 times[17][1] = 2.40000f;
 angles[17][2] = -0.87266f;
 times[17][2] = 3.70000f;
+angles[17][3] = -0.87266f;
+times[17][3] = 4.40000f;
+angles[17][4] = -0.96517f;
+times[17][4] = 5.20000f;
+angles[17][5] = -0.78540f;
+times[17][5] = 6.20000f;
+angles[17][6] = 0.00000f;
+times[17][6] = 7.40000f;
+angles[17][7] = 0.00000f;
+times[17][7] = 8.40000f;
 
 jointCodes[18] = "RKneePitch";
 angles[18].arraySetSize(8);
@@ -979,18 +1025,29 @@ angles[17][10] = 0.01047f;
 times[17][10] = 9.40000f;
 
 jointCodes[18] = "RHipYawPitch";
-angles[18].arraySetSize(5);
-times[18].arraySetSize(5);
-angles[18][0] = -0.49909f;
-times[18][0] = 4.90000f;
-angles[18][1] = -0.85897f;
-times[18][1] = 5.80000f;
-angles[18][2] = -0.40225f;
-times[18][2] = 6.80000f;
-angles[18][3] = -0.40225f;
-times[18][3] = 7.30000f;
-angles[18][4] = -0.40225f;
-times[18][4] = 8.40000f;
+angles[18].arraySetSize(10);
+times[18].arraySetSize(10);
+angles[18][0] = 0.00000f;
+times[18][0] = 0.90000f;
+angles[18][1] = 0.00000f;
+times[18][1] = 1.90000f;
+angles[18][2] = -0.00000f;
+times[18][2] = 2.70000f;
+angles[18][3] = -0.66323f;
+times[18][3] = 3.40000f;
+angles[18][4] = -0.49909f;
+times[18][4] = 4.90000f;
+angles[18][5] = -0.85897f;
+times[18][5] = 5.80000f;
+angles[18][6] = -0.40225f;
+times[18][6] = 6.80000f;
+angles[18][7] = -0.40225f;
+times[18][7] = 7.30000f;
+angles[18][8] = 0.00000f;
+times[18][8] = 8.40000f;
+angles[18][9] = 0.00000f;
+times[18][9] = 9.40000f;
+
 
 jointCodes[19] = "RKneePitch";
 angles[19].arraySetSize(11);
@@ -1081,9 +1138,9 @@ motion->angleInterpolation(jointCodes, angles, times, 1);
 void MotionController::ALstandUpCross(){
 
 AL::ALValue jointCodes, angles, times;
-jointCodes.arraySetSize(25);
-angles.arraySetSize(25);
-times.arraySetSize(25);
+jointCodes.arraySetSize(26);
+angles.arraySetSize(26);
+times.arraySetSize(26);
 
 jointCodes[0] = "HeadPitch";
 angles[0].arraySetSize(2);
@@ -1276,6 +1333,14 @@ angles[24].arraySetSize(1);
 times[24].arraySetSize(1);
 angles[24][0] = 1.57080f;
 times[24][0] = 1.90000f;
+
+jointCodes[25] = "RHipYawPitch";
+angles[25].arraySetSize(2);
+times[25].arraySetSize(2);
+angles[25][0] = 0.00000f;
+times[25][0] = 1.90000f;
+angles[25][1] = 0.00000f;
+times[25][1] = 2.90000f;
 
 motion->angleInterpolation(jointCodes, angles, times, 1);
 

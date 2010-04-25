@@ -27,6 +27,9 @@ private:
 	MotionCommand command;
 
 	bool robotDown;
+	bool robotUp; 
+	float AccZvalue;
+	
 	bool walkActive;
 	bool headActive;
 	bool actionActive;
@@ -54,7 +57,9 @@ public:
 			mq->subscribe("motion",this,0);
 		}
 
-		robotDown = 0;
+		robotDown = false;
+		robotUp = true;
+		
 		walkPID = 0;
 		headPID = 0;
 		actionPID = 0;
