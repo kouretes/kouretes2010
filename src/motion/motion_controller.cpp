@@ -21,7 +21,7 @@ void MotionController::mglrun(){
 
 	if (robotDown) {
 		cout << "Will stand up now ... " << std::endl; 
-		motion->setStiffnesses("Body", 0.9);
+		motion->setStiffnesses("Body", 1.0);
 		ALstandUp();
 		robotDown = false;
 		return;
@@ -29,7 +29,7 @@ void MotionController::mglrun(){
 	
 	if (!robotUp && !robotDown) { 
 //		if (AccZvalue > 8.5) { // Webots
-		if (AccZvalue <  55) { // Robot
+		if (AccZvalue <  -50) { // Robot
 			robotUp = true;
 			cout << "Stood up ... " << std::endl;
 			sleep(1);
@@ -51,6 +51,7 @@ void MotionController::mglrun(){
 
 	if ( robotUp && (walkPID==0) ) {
 		//walkPid = motion->post.setWalkTargetVelocity(0.5, 0.5, 0.5, 0.5);
+		motion->setStiffnesses("Body", 1.0);
 		float x = rand() / ((float) RAND_MAX);
 		float y = rand() / ((float) RAND_MAX);
 		float t = rand() / ((float) RAND_MAX);
@@ -75,34 +76,6 @@ void MotionController::mglrun(){
 }
 
 
-/*
-void MotionController::ALstandUp(){
-
-	float angleY;
-	
-	angleY = memory->getData("Device/SubDeviceList/InertialSensor/AngleY/Sensor/Value");
-	cout << "angleY " << angleY << std::endl;
-        
-        if ( (angleY >= 1.0) || (angleY <= -1.0) ) {
-		ALstandUpCross();
-		cout << "Stand Up: Cross" << std::endl;
-	}
-
-	angleY = memory->getData("Device/SubDeviceList/InertialSensor/AngleY/Sensor/Value");
-	cout << "angleY " << angleY << std::endl;
-        
-        if (angleY > 1.0) {
-		ALstandUpBack();
-		cout << "Stand Up: Back" << std::endl;
-	}
-	else if (angleY < -1.0) {
-		ALstandUpFront();
-		cout << "Stand Up: Front" << std::endl;
-	}
-	return;
-}
-*/
-
 
 void MotionController::ALstandUp(){
 
@@ -112,13 +85,15 @@ void MotionController::ALstandUp(){
 	float AccXvalue = memory->getData("Device/SubDeviceList/InertialSensor/AccX/Sensor/Value");
 	cout << "AccXvalue " << AccXvalue << std::endl;
         
-        if (AccXvalue > 1.0) {
+//	if (AccXvalue > 1.0) { // Webots
+        if (AccXvalue < 5.0) { // Nao
 		ALstandUpBack();
-		cout << "Stand Up: Back" << std::endl;
+		cout << "Stand Up: From Back" << std::endl;
 	}
-	else if (AccXvalue < -1.0) {
+//	else if (AccXvalue < -1.0) { // Webots
+	else if (AccXvalue > -5.0) { // Nao
 		ALstandUpFront();
-		cout << "Stand Up: Front" << std::endl;
+		cout << "Stand Up: From Front" << std::endl;
 	}
 	return;
 }
@@ -1333,11 +1308,13 @@ void MotionController::ALstandUp2010(){
 	float AccXvalue = memory->getData("Device/SubDeviceList/InertialSensor/AccX/Sensor/Value");
 	cout << "AccXvalue " << AccXvalue << std::endl;
         
-        if (AccXvalue > 1.0) {
+//	if (AccXvalue > 1.0) { // Webots
+        if (AccXvalue < 5.0) { // Nao
 		ALstandUpBack2010();
 		cout << "Stand Up: Back" << std::endl;
 	}
-	else if (AccXvalue < -1.0) {
+//	else if (AccXvalue < -1.0) { // Webots
+	else if (AccXvalue > -5.0) { // Nao
 		ALstandUpFront2010();
 		cout << "Stand Up: Front" << std::endl;
 	}
