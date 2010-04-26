@@ -14,6 +14,7 @@ void MotionController::run() {
 
 void MotionController::commands(){
 
+/*
 	if (walkPID == 0) {
 		cout << "Sending walk command!" << std::endl;
 		sleep(2);
@@ -26,16 +27,30 @@ void MotionController::commands(){
 		memory->insertData("kouretes/WalkParam2",(float) y);
 		memory->insertData("kouretes/WalkParam3",(float) t);
 	}
-	
-	if ( (headPID == 0) && ( counter % 50 == 0 ) ) {
-		cout << "Sending head command!" << std::endl;
+*/
+	memory->insertData("kouretes/WalkCommand", AL::ALValue(""));
+
+/*
+	if ( (headPID == 0) && ( counter % 10 == 0 ) ) {
+		cout << "Sending set head command!" << std::endl;
 		float x = rand() / ((float) RAND_MAX);
 		x = x - 0.5;
 		float y = rand() / ((float) RAND_MAX);
 		y = y - 0.5;
 		memory->insertData("kouretes/HeadCommand", AL::ALValue("setHead"));
-		memory->insertData("kouretes/HeadParam1",(float) x);
-		memory->insertData("kouretes/HeadParam2",(float) y);
+		memory->insertData("kouretes/HeadParam1",(float) x);  // Head Yaw
+		memory->insertData("kouretes/HeadParam2",(float) y);  // Head Pitch
+	}
+*/
+	if ( (headPID == 0) && ( counter % 10 == 0 ) ) {
+		cout << "Sending change head command!" << std::endl;
+		float x = rand() / ((float) RAND_MAX);
+		x = (x - 0.5)*0.5;
+		float y = rand() / ((float) RAND_MAX);
+		y = (y - 0.5)*0.5;
+		memory->insertData("kouretes/HeadCommand", AL::ALValue("changeHead"));
+		memory->insertData("kouretes/HeadParam1",(float) x);  // change in Head Yaw
+		memory->insertData("kouretes/HeadParam2",(float) y);  // change in Head Pitch
 	}
 	
 	return;
@@ -145,13 +160,28 @@ void MotionController::mglrun(){
 			headParam2 = memory->getData("kouretes/HeadParam2");
 			std::cout << headCommand << " with parameters " << headParam1 << " " << headParam2 << std::endl;
 			names.arraySetSize(2);
-			angles.arraySetSize(2);
+			values.arraySetSize(2);
 			names[0] = "HeadYaw";
-			angles[0] = headParam1;
+			values[0] = headParam1;
 			names[1] = "HeadPitch";
-			angles[1] = headParam2;
+			values[1] = headParam2;
 			float fractionMaxSpeed  = 0.2;
-			headPID = motion->post.setAngles(names, angles, fractionMaxSpeed);
+			headPID = motion->post.setAngles(names, values, fractionMaxSpeed);
+			std::cout << "   Head ID: " << headPID << std::endl;
+			memory->insertData("kouretes/HeadCommand", AL::ALValue("RUNNING"));
+		}
+		else if (headCommand == "changeHead") {
+			headParam1 = memory->getData("kouretes/HeadParam1");
+			headParam2 = memory->getData("kouretes/HeadParam2");
+			std::cout << headCommand << " with parameters " << headParam1 << " " << headParam2 << std::endl;
+			names.arraySetSize(2);
+			values.arraySetSize(2);
+			names[0] = "HeadYaw";
+			values[0] = headParam1;
+			names[1] = "HeadPitch";
+			values[1] = headParam2;
+			float fractionMaxSpeed  = 0.2;
+			headPID = motion->post.changeAngles(names, values, fractionMaxSpeed);
 			std::cout << "   Head ID: " << headPID << std::endl;
 			memory->insertData("kouretes/HeadCommand", AL::ALValue("RUNNING"));
 		}

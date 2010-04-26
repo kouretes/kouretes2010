@@ -14,7 +14,7 @@
 #include "alvalue.h"
 #include "messages/motion.pb.h"
 
-#define WEBOTS 1
+#define WEBOTS
 
 
 class MotionController : public Thread, public Publisher, public Subscriber{
@@ -41,7 +41,7 @@ private:
 	int headPID;
 	std::string headCommand;
 	float headParam1, headParam2;
-	AL::ALValue names, angles;
+	AL::ALValue names, values;
 
 	int actionPID;
 	
