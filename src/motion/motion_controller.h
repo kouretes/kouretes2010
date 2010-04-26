@@ -68,18 +68,16 @@ public:
 	}
 
 	void run();
-
 	void mglrun();
 	
 	void ALstandUp();
-	
 	void ALstandUpCross();
-	
 	void ALstandUpFront();
-	
 	void ALstandUpBack();
-
 	
+	void ALstandUp2010();
+	void ALstandUpFront2010();
+	void ALstandUpBack2010();
 
 };
 
