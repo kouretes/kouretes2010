@@ -22,7 +22,7 @@ void MotionController::mglrun(){
 	if (robotDown) {
 		cout << "Will stand up now ... " << std::endl; 
 		motion->setStiffnesses("Body", 1.0);
-		ALstandUp();
+		ALstandUp2010();
 		robotDown = false;
 		return;
 	}
@@ -1305,6 +1305,7 @@ motion->angleInterpolation(jointCodes, angles, times, 1);
 
 void MotionController::ALstandUp2010(){
 
+	cout << "Using 2010 StandUp" << std::endl;
 	float AccXvalue = memory->getData("Device/SubDeviceList/InertialSensor/AccX/Sensor/Value");
 	cout << "AccXvalue " << AccXvalue << std::endl;
         
