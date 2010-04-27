@@ -18,6 +18,7 @@
 #include "albrokermanager.h"
 #include "alptr.h"
 #include "motion/motion_controller.h"
+#include "vision/vision.h"
 
 using namespace AL;
 using namespace std;
@@ -63,11 +64,12 @@ int main(int argc, char *argv[]) {
 		AL::ALBroker::Ptr broker = AL::ALBroker::createBroker(brokerName, brokerIP, brokerPort, parentBrokerIP, parentBrokerPort);
 
 		SleepMs(1000);
-
-		MotionController mc(broker);
-		mc.start();
+        Vision testV(broker);
+        testV.testrun();
+		//MotionController mc(broker);
+		//mc.start();
 		SleepMs(1000);
-		mc.join();
+//		mc.join();
 
 		cout << "EXITING TEST" << endl;
 		exit(0);
