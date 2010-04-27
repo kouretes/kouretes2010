@@ -5,6 +5,7 @@
 #define MAXSKIP 5
 #define GLOBALSKIP  15
 
+
 void Vision::gridScan(const KSegmentator::colormask_t color) {
 	//Horizontal + Vertical Scan
 	ballpixels.clear();
@@ -84,9 +85,11 @@ void Vision::gridScan(const KSegmentator::colormask_t color) {
 			}
 		}
 	}
-	cout << "Ballpixelsize:" << ballpixels.size() << endl;
 	balldata_t b = locateBall(ballpixels);
-	cout << b.x << " " << b.y << " " << b.r << endl;
+#ifdef DEBUGVISION
+	cout << "Ballpixelsize:" << ballpixels.size() << endl;
+	debugcout << b.x << " " << b.y << " " << b.r << endl;
+#endif
 #define  VFov 34.8f
 #define  HFov 46.4f
 #define TO_RAD 0.01745329f
@@ -155,7 +158,7 @@ Vision::balldata_t Vision::locateBall(vector<CvPoint> cand) {
 
 	vector<CvPoint>::iterator i;
 	//For all detected points
-	cout << "locateball" << endl;
+	//cout << "locateball" << endl;
 	for (i = cand.begin(); i != cand.end(); i++) {
 		vector<CvPoint> points;
 		vector<balldata_t>::iterator bd = history.begin();
@@ -187,7 +190,7 @@ Vision::balldata_t Vision::locateBall(vector<CvPoint> cand) {
 		CvPoint2D32f center;
 		center.x = 0;
 		center.y = 0;
-		cout << "Trace X " << (*i).x << " y " << "Y " << (*i).y << endl;
+		//cout << "Trace X " << (*i).x << " y " << "Y " << (*i).y << endl;
 		CvPoint pleft = traceline(middle, cvPoint(-1, 0), orange);
 		if (inbounds(pleft.x,pleft.y))
 			points.push_back(pleft);
@@ -220,7 +223,7 @@ Vision::balldata_t Vision::locateBall(vector<CvPoint> cand) {
 		center.x /= points.size();
 		center.y /= points.size();
 		float radius = 0;
-		cout << "Find Center:" << center.x << " " << center.y << " " << endl;
+		//cout << "Find Center:" << center.x << " " << center.y << " " << endl;
 		//Iterate for radius
 		for (unsigned int j = 0; j < points.size(); j++) {
 			radius += CvDist(center,points[j]);//sqrt((center.x-points[i].x)*)(center.x-points[i].x)+(center.y-points[i].y)*)(center.y-points[i].y));
@@ -238,14 +241,14 @@ Vision::balldata_t Vision::locateBall(vector<CvPoint> cand) {
 	vector<balldata_t>::iterator bd = history.begin();
 	balldata_t best;
 	best.r = 0;
-	///cout << "BEST found" << endl;
+	///debugcout << "BEST found" << endl;
 	while (bd != history.end()) {
 		CvPoint2D32f t;
 		t.x = (*bd).x;
 		t.y = (*bd).y;
 		if ((*bd).r > best.r && calculateValidBall(t, (*bd).r, (KSegmentator::colormask_t) orange))
 			best = *bd;
-		cout << best.x << " " << best.y << " " << endl;
+		//cout << best.x << " " << best.y << " " << endl;
 		bd++;
 	}
 	return best;

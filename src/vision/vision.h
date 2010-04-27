@@ -13,6 +13,9 @@
 #include "KImageExtractor.h"
 #include "KSegmentator.h"
 
+//#define DEBUGVISION
+
+
 class Vision : public Thread
 {
 
