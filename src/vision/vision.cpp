@@ -92,7 +92,7 @@ void Vision::gridScan(const KSegmentator::colormask_t color) {
 #define TO_RAD 0.01745329f
 	float x = (0.5 - (double) (b.x) / (double) rawImage->width) * HFov * TO_RAD;
 	float y = (0.5 - (double) (b.y) / (double) rawImage->height) * VFov * TO_RAD;
-	float r = b.r * (HFov / (double) rawImage->width);
+	float r = b.r * (HFov / (double) rawImage->width)* TO_RAD;
 	if (b.r > 0) {
 		memory->insertData("kouretes/Ball/cx", x); // change in Head Yaw
 		memory->insertData("kouretes/Ball/cy", y); // change in Head Pitch

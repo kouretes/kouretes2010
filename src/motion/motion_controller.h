@@ -14,7 +14,7 @@
 #include "alvalue.h"
 #include "messages/motion.pb.h"
 
-#define WEBOTS
+//#define WEBOTS
 
 
 class MotionController : public Thread, public Publisher, public Subscriber{
@@ -23,38 +23,38 @@ private:
 
 	AL::ALPtr<AL::ALMotionProxy> motion;
 	AL::ALPtr<AL::ALMemoryProxy> memory;
-	
+
 	float *AccZ;
 
 	MotionCommand command;
 
 	bool robotDown;
-	bool robotUp; 
+	bool robotUp;
 	float AccZvalue;
-	
+
 	int counter;
 
 	int walkPID;
 	std::string walkCommand;
 	float walkParam1, walkParam2, walkParam3, walkParam4;
-	
+
 	int headPID;
 	std::string headCommand;
 	float headParam1, headParam2;
 	AL::ALValue names, values;
 
 	int actionPID;
-	
+
 public:
 
 	MotionController(AL::ALPtr<AL::ALBroker> pbroker, MessageQueue* mq = 0) {
-	    	try {motion = pbroker->getMotionProxy();} 
+	    	try {motion = pbroker->getMotionProxy();}
 		catch (AL::ALError& e) {cout << "Error in getting motion proxy" << std::endl;}
 		motion->setStiffnesses("Body", 1.0);
 
-	    	try {memory = pbroker->getMemoryProxy();} 
+	    	try {memory = pbroker->getMemoryProxy();}
 		catch (AL::ALError& e) {cout << "Error in getting memory proxy" << std::endl;}
-				
+
 		AccZ = (float*) memory->getDataPtr("Device/SubDeviceList/InertialSensor/AccZ/Sensor/Value");
 
 		if (mq != 0){
@@ -64,13 +64,13 @@ public:
 
 		robotDown = false;
 		robotUp = true;
-		
+
 		walkPID = 0;
 		headPID = 0;
 		actionPID = 0;
 
 		counter = 0;
-		
+
 		walkCommand = "";
 		headCommand = "";
 	}
@@ -78,12 +78,12 @@ public:
 	void run();
 	void commands();
 	void mglrun();
-	
+
 	void ALstandUp();
 	void ALstandUpCross();
 	void ALstandUpFront();
 	void ALstandUpBack();
-	
+
 	void ALstandUp2010();
 	void ALstandUpFront2010();
 	void ALstandUpBack2010();

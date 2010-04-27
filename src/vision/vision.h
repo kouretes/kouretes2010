@@ -114,7 +114,7 @@ public:
          pos[0]=pos[0]+0.1;
          pos[1]=pos[1]+0.1;
          m->callVoid("setAngles",names,pos,0.8);*/
-        int k = cvWaitKey(100);
+        int k = cvWaitKey(250);
 
 
     }
