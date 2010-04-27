@@ -73,6 +73,9 @@ public:
 
 		walkCommand = "";
 		headCommand = "";
+
+		memory->insertData("kouretes/WalkCommand", AL::ALValue("DONE"));
+		memory->insertData("kouretes/HeadCommand", AL::ALValue("DONE"));
 	}
 
 	void run();
