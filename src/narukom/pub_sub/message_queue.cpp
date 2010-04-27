@@ -79,11 +79,11 @@ void MessageQueue::create_tree(TopicTree<string,MessageBuffer>* tree,const  stri
 //   
    string parent = "";
    string topic;
-    ticpp::Document doc;
-    try {
-        doc.LoadFile(file_name.c_str());
-    }
-    catch (ticpp::Exception)
+  //  ticpp::Document doc;
+   // try {
+   //     doc.LoadFile(file_name.c_str());
+    //}
+    //catch (ticpp::Exception)
     {
         cout << "Could not load file " << file_name << endl;
         topic_tree->add_topic(string("global"));
@@ -98,9 +98,9 @@ void MessageQueue::create_tree(TopicTree<string,MessageBuffer>* tree,const  stri
 
     }
 //     doc.LoadFile();
-try{
+/*try{
         cout << "File " << file_name << endl;
-        ticpp::Element* pElem  = doc.FirstChild("tree")->FirstChildElement();
+     //   ticpp::Element* pElem  = doc.FirstChild("tree")->FirstChildElement();
 	
 
 //	pElem->GetFirstChild("node");
@@ -135,7 +135,7 @@ catch(ticpp::Exception& ex)
   cout << ex.what();
   cout << "EEEEEEEEEEEEEEXECEEEEEPTION" << endl;
 }
-
+*/
 }
 
     void MessageQueue::remove_publisher(Publisher* pub)

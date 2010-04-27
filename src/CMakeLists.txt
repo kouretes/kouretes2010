@@ -33,5 +33,5 @@ add_subdirectory(localization)
 add_library(kouretes_lib krobot.cpp)
 add_executable(kouretes_bin krobot.cpp)
 
-target_link_libraries(kouretes_bin messages narukom motion vision behavior sensors localization ${PROTOBUF_LIBRARIES} ${ZLIB_LIBRARIES}  ${TICPP_LIBRARIES} )
+target_link_libraries(kouretes_bin messages narukom motion vision behavior sensors localization )
 use_lib(kouretes_bin ALCOMMON ALVALUE ALMATH LIBCORE TOOLS )
