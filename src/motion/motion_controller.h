@@ -14,6 +14,8 @@
 #include "alvalue.h"
 #include "messages/motion.pb.h"
 
+#define WEBOTS
+
 
 class MotionController : public Thread, public Publisher, public Subscriber{
 
@@ -30,22 +32,25 @@ private:
 	bool robotUp; 
 	float AccZvalue;
 	
-	bool walkActive;
-	bool headActive;
-	bool actionActive;
-
-	int walkPID;
-	int headPID;
-	int actionPID;
-
 	int counter;
 
+	int walkPID;
+	std::string walkCommand;
+	float walkParam1, walkParam2, walkParam3, walkParam4;
+	
+	int headPID;
+	std::string headCommand;
+	float headParam1, headParam2;
+	AL::ALValue names, values;
 
+	int actionPID;
+	
 public:
 
 	MotionController(AL::ALPtr<AL::ALBroker> pbroker, MessageQueue* mq = 0) {
 	    	try {motion = pbroker->getMotionProxy();} 
 		catch (AL::ALError& e) {cout << "Error in getting motion proxy" << std::endl;}
+		motion->setStiffnesses("Body", 1.0);
 
 	    	try {memory = pbroker->getMemoryProxy();} 
 		catch (AL::ALError& e) {cout << "Error in getting memory proxy" << std::endl;}
@@ -65,9 +70,13 @@ public:
 		actionPID = 0;
 
 		counter = 0;
+		
+		walkCommand = "";
+		headCommand = "";
 	}
 
 	void run();
+	void commands();
 	void mglrun();
 	
 	void ALstandUp();

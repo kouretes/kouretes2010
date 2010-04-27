@@ -4,8 +4,55 @@
 
 void MotionController::run() {
 	//std::cout << " MotionController START" << std::endl;
+	commands();
 	mglrun();  /* Uncomment for action! */
 	//std::cout << " MotionController END" << std::endl;
+	return;
+}
+
+
+
+void MotionController::commands(){
+
+/*
+	if (walkPID == 0) {
+		cout << "Sending walk command!" << std::endl;
+		sleep(2);
+		// counter = 0;
+		float x = rand() / ((float) RAND_MAX);
+		float y = rand() / ((float) RAND_MAX);
+		float t = rand() / ((float) RAND_MAX);
+		memory->insertData("kouretes/WalkCommand", AL::ALValue("walkTo"));
+		memory->insertData("kouretes/WalkParam1",(float) x);
+		memory->insertData("kouretes/WalkParam2",(float) y);
+		memory->insertData("kouretes/WalkParam3",(float) t);
+	}
+*/
+	memory->insertData("kouretes/WalkCommand", AL::ALValue(""));
+
+/*
+	if ( (headPID == 0) && ( counter % 10 == 0 ) ) {
+		cout << "Sending set head command!" << std::endl;
+		float x = rand() / ((float) RAND_MAX);
+		x = x - 0.5;
+		float y = rand() / ((float) RAND_MAX);
+		y = y - 0.5;
+		memory->insertData("kouretes/HeadCommand", AL::ALValue("setHead"));
+		memory->insertData("kouretes/HeadParam1",(float) x);  // Head Yaw
+		memory->insertData("kouretes/HeadParam2",(float) y);  // Head Pitch
+	}
+*/
+	if ( (headPID == 0) && ( counter % 10 == 0 ) ) {
+		cout << "Sending change head command!" << std::endl;
+		float x = rand() / ((float) RAND_MAX);
+		x = (x - 0.5)*0.5;
+		float y = rand() / ((float) RAND_MAX);
+		y = (y - 0.5)*0.5;
+		memory->insertData("kouretes/HeadCommand", AL::ALValue("changeHead"));
+		memory->insertData("kouretes/HeadParam1",(float) x);  // change in Head Yaw
+		memory->insertData("kouretes/HeadParam2",(float) y);  // change in Head Pitch
+	}
+	
 	return;
 }
 
@@ -19,6 +66,29 @@ void MotionController::mglrun(){
 	AccZvalue = memory->getData("Device/SubDeviceList/InertialSensor/AccZ/Sensor/Value");
 	//cout << counter << "  " << AccZvalue << "  " << robotUp << "  " << robotDown << std::endl;
 
+
+	/* Check if the robot is falling and remove stiffness, kill all motions */
+#ifdef WEBOTS
+	if ( (!robotDown) && (AccZvalue < 5.5) ) {  // Webots
+#else
+	if ( (!robotDown) && (AccZvalue > -45) ) {  // Robot
+#endif
+		cout << "Robot falling: Stiffness off" << std::endl;
+		motion->setStiffnesses("Body", 0.0);
+		robotUp = false; 
+		robotDown = true;
+		motion->post.killWalk();
+		walkPID = 0; 
+		if (headPID != 0) {
+			motion->post.killTask(headPID);
+			headPID = 0;
+		}
+		sleep(1);
+		return;
+	}
+	
+
+	/* Check if the robot is down and stand up */
 	if (robotDown) {
 		cout << "Will stand up now ... " << std::endl; 
 		motion->setStiffnesses("Body", 1.0);
@@ -27,9 +97,14 @@ void MotionController::mglrun(){
 		return;
 	}
 	
+	
+	/* Check if the robot stood up after a stand up procedure */
 	if (!robotUp && !robotDown) { 
-//		if (AccZvalue > 8.5) { // Webots
+#ifdef WEBOTS
+		if (AccZvalue > 8.5) { // Webots
+#else
 		if (AccZvalue <  -50) { // Robot
+#endif
 			robotUp = true;
 			cout << "Stood up ... " << std::endl;
 			sleep(1);
@@ -37,63 +112,143 @@ void MotionController::mglrun(){
 		}
 	}
 
-//	if ( (!robotDown) && (AccZvalue < 5.5) ) {  // Webots
-	if ( (!robotDown) && (AccZvalue > -45) ) {  // Robot
-		cout << "Robot falling: Stiffness off" << std::endl;
-		motion->setStiffnesses("Body", 0.0);
-		robotUp = false; 
-		robotDown = true; 
-		motion->post.killWalk();
-		walkPID = 0; 
-		sleep(2);
-		return;
-	}
 
-	if ( robotUp && (walkPID==0) ) {
-		//walkPid = motion->post.setWalkTargetVelocity(0.5, 0.5, 0.5, 0.5);
-		motion->setStiffnesses("Body", 1.0);
-		float x = rand() / ((float) RAND_MAX);
-		float y = rand() / ((float) RAND_MAX);
-		float t = rand() / ((float) RAND_MAX);
-		cout << "WalkTo " << x << " " << y << " " << t << std::endl; 
-		walkPID = motion->post.walkTo(x, y, t);
-		std::cout << "   Walk ID: " << walkPID << std::endl;
-	}
-
-	if ( robotUp && !motion->isRunning(walkPID) && !motion->walkIsActive() ) {
-		walkPID = 0;
-		std::cout << "   Walk finished " << counter << std::endl;
-		sleep(5);
-		counter = 0;
-	}
-
-	//sleep(5);
-	//motion->post.killWalk();
-	//sleep(5);
+	/* The robot is up and ready to execute motions */
+	if ( robotUp ) {
 	
+		/* Check if a Walk command has been completed */
+		if ( (walkPID!=0) && !motion->isRunning(walkPID) && !motion->walkIsActive() ) {
+			walkPID = 0;
+			std::cout << "   Walk command completed! Motion engine executed " << counter << " times. " << std::endl;
+			memory->insertData("kouretes/WalkCommand", AL::ALValue("DONE"));
+		}
+
+		/* Check if there is a Walk command to execute */
+		walkCommand = (std::string) memory->getData("kouretes/WalkCommand");		
+		if (walkCommand == "walkTo") {
+			walkParam1 = memory->getData("kouretes/WalkParam1");
+			walkParam2 = memory->getData("kouretes/WalkParam2");
+			walkParam3 = memory->getData("kouretes/WalkParam3");
+			std::cout << walkCommand << " with parameters " << walkParam1 << " " << walkParam2 << " " << walkParam3 << std::endl;
+			walkPID = motion->post.walkTo(walkParam1, walkParam2, walkParam3);
+			std::cout << "   Walk ID: " << walkPID << std::endl;
+			memory->insertData("kouretes/WalkCommand", AL::ALValue("RUNNING"));
+		}
+		else if (walkCommand == "setWalkTargetVelocity") { 
+			walkParam1 = memory->getData("kouretes/WalkParam1");
+			walkParam2 = memory->getData("kouretes/WalkParam2");
+			walkParam3 = memory->getData("kouretes/WalkParam3");
+			walkParam4 = memory->getData("kouretes/WalkParam4");
+			std::cout << walkCommand << " with parameters " << walkParam1 << " " << walkParam2 << " " << walkParam3 << " " << walkParam4 << std::endl;
+			walkPID = motion->post.setWalkTargetVelocity(walkParam1, walkParam2, walkParam3, walkParam4);
+			std::cout << "   Walk ID: " << walkPID << std::endl;
+			memory->insertData("kouretes/WalkCommand", AL::ALValue("RUNNING"));
+		}
+		
+		
+		/* Check if a Head command has been completed */
+		if ( (headPID!=0) && !motion->isRunning(headPID) ) {
+			headPID = 0;
+			std::cout << "   Head command completed! Motion engine executed " << counter << " times. " << std::endl;
+			memory->insertData("kouretes/HeadCommand", AL::ALValue("DONE"));
+		}
+
+		/* Check if there is a Head command to execute */
+		headCommand = (std::string) memory->getData("kouretes/HeadCommand");		
+		if (headCommand == "setHead") {
+			headParam1 = memory->getData("kouretes/HeadParam1");
+			headParam2 = memory->getData("kouretes/HeadParam2");
+			std::cout << headCommand << " with parameters " << headParam1 << " " << headParam2 << std::endl;
+			names.arraySetSize(2);
+			values.arraySetSize(2);
+			names[0] = "HeadYaw";
+			values[0] = headParam1;
+			names[1] = "HeadPitch";
+			values[1] = headParam2;
+			float fractionMaxSpeed  = 0.2;
+			headPID = motion->post.setAngles(names, values, fractionMaxSpeed);
+			std::cout << "   Head ID: " << headPID << std::endl;
+			memory->insertData("kouretes/HeadCommand", AL::ALValue("RUNNING"));
+		}
+		else if (headCommand == "changeHead") {
+			headParam1 = memory->getData("kouretes/HeadParam1");
+			headParam2 = memory->getData("kouretes/HeadParam2");
+			std::cout << headCommand << " with parameters " << headParam1 << " " << headParam2 << std::endl;
+			names.arraySetSize(2);
+			values.arraySetSize(2);
+			names[0] = "HeadYaw";
+			values[0] = headParam1;
+			names[1] = "HeadPitch";
+			values[1] = headParam2;
+			float fractionMaxSpeed  = 0.2;
+			headPID = motion->post.changeAngles(names, values, fractionMaxSpeed);
+			std::cout << "   Head ID: " << headPID << std::endl;
+			memory->insertData("kouretes/HeadCommand", AL::ALValue("RUNNING"));
+		}
+
+	}
 
 	return;
 }
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void MotionController::ALstandUp(){
 
 	ALstandUpCross();
-	cout << "Stand Up: Cross" << std::endl;
+	cout << "Stand Up 2009: Cross" << std::endl;
 
 	float AccXvalue = memory->getData("Device/SubDeviceList/InertialSensor/AccX/Sensor/Value");
 	cout << "AccXvalue " << AccXvalue << std::endl;
-        
-//	if (AccXvalue > 1.0) { // Webots
-        if (AccXvalue < 5.0) { // Nao
+
+#ifdef WEBOTS
+	if (AccXvalue > 1.0) { // Webots
+#else
+        if (AccXvalue < 5.0) { // Robot
+#endif
 		ALstandUpBack();
-		cout << "Stand Up: From Back" << std::endl;
+		cout << "Stand Up 2009: From Back" << std::endl;
 	}
-//	else if (AccXvalue < -1.0) { // Webots
-	else if (AccXvalue > -5.0) { // Nao
+#ifdef WEBOTS
+	else if (AccXvalue < -1.0) { // Webots
+#else
+	else if (AccXvalue > -5.0) { // Robot
+#endif
 		ALstandUpFront();
-		cout << "Stand Up: From Front" << std::endl;
+		cout << "Stand Up 2009: From Front" << std::endl;
 	}
 	return;
 }
@@ -525,8 +680,10 @@ times[20][7] = 8.40000f;
 
 motion->angleInterpolation(jointCodes, angles, times, 1);
 
-
 }
+
+
+
 
 
 
@@ -1106,9 +1263,9 @@ times[21][10] = 9.40000f;
 
 motion->angleInterpolation(jointCodes, angles, times, 1);
 
-
-
 }
+
+
 
 
 
@@ -1297,26 +1454,56 @@ times[21][1] = 2.90000f;
 
 motion->angleInterpolation(jointCodes, angles, times, 1);
 
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 void MotionController::ALstandUp2010(){
 
+	ALstandUpCross();
+	cout << "Stand Up 2009: Cross" << std::endl;
+
 	float AccXvalue = memory->getData("Device/SubDeviceList/InertialSensor/AccX/Sensor/Value");
 	cout << "AccXvalue " << AccXvalue << std::endl;
         
-//	if (AccXvalue > 1.0) { // Webots
-        if (AccXvalue < 5.0) { // Nao
+#ifdef WEBOTS
+	if (AccXvalue > 1.0) { // Webots
+#else
+        if (AccXvalue < 5.0) { // Robot
+#endif
 		ALstandUpBack2010();
-		cout << "Stand Up: Back" << std::endl;
+		cout << "Stand Up 2010: From Back" << std::endl;
 	}
-//	else if (AccXvalue < -1.0) { // Webots
-	else if (AccXvalue > -5.0) { // Nao
+#ifdef WEBOTS
+	else if (AccXvalue < -1.0) { // Webots
+#else
+	else if (AccXvalue > -5.0) { // Robot
+#endif
 		ALstandUpFront2010();
-		cout << "Stand Up: Front" << std::endl;
+		cout << "Stand Up 2010: From Front" << std::endl;
 	}
 	return;
 }
