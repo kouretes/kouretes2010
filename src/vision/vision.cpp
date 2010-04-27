@@ -5,8 +5,7 @@
 #define MAXSKIP 5
 #define GLOBALSKIP  15
 
-void Vision::gridScan(const KSegmentator::colormask_t color)
-{
+void Vision::gridScan(const KSegmentator::colormask_t color) {
 	//Horizontal + Vertical Scan
 	ballpixels.clear();
 	int diff = 0;
@@ -85,25 +84,22 @@ void Vision::gridScan(const KSegmentator::colormask_t color)
 			}
 		}
 	}
-	cout<<"Ballpixelsize:"<<ballpixels.size()<<endl;
-	balldata_t b=locateBall(ballpixels);
-    cout<<b.x<<" "<<b.y<<" "<< b.r<<endl;
+	cout << "Ballpixelsize:" << ballpixels.size() << endl;
+	balldata_t b = locateBall(ballpixels);
+	cout << b.x << " " << b.y << " " << b.r << endl;
 #define  VFov 34.8f
 #define  HFov 46.4f
 #define TO_RAD 0.01745329f
-    float x= (0.5 - (double) (b.x) / (double) rawImage->width) * HFov * TO_RAD;
-	float y=(0.5 - (double) (b.y) / (double) rawImage->height) * VFov * TO_RAD;
-	float r=b.r*(HFov / (double) rawImage->width);
-	if(b.r>0)
-	{
-        memory->insertData("kouretes/Ball/cx",x);  // change in Head Yaw
-        memory->insertData("kouretes/Ball/cy",y);  // change in Head Pitch
-        memory->insertData("kouretes/Ball/radius",r);  // change in Head Pitch
-        memory->insertData("kouretes/Ball/found",1.0f);  // change
-	}
-	else
-	{
-	    memory->insertData("kouretes/Ball/found",.0f);  // change
+	float x = (0.5 - (double) (b.x) / (double) rawImage->width) * HFov * TO_RAD;
+	float y = (0.5 - (double) (b.y) / (double) rawImage->height) * VFov * TO_RAD;
+	float r = b.r * (HFov / (double) rawImage->width);
+	if (b.r > 0) {
+		memory->insertData("kouretes/Ball/cx", x); // change in Head Yaw
+		memory->insertData("kouretes/Ball/cy", y); // change in Head Pitch
+		memory->insertData("kouretes/Ball/radius", r); // change in Head Pitch
+		memory->insertData("kouretes/Ball/found", 1.0f); // change
+	} else {
+		memory->insertData("kouretes/Ball/found", .0f); // change
 	}
 }
 
@@ -111,7 +107,7 @@ void Vision::gridScan(const KSegmentator::colormask_t color)
  * Hard Decision: Is it good enough for a ball?
  */
 bool Vision::calculateValidBall(const CvPoint2D32f center, float radius, KSegmentator::colormask_t c) {
-    return true;
+	return true;
 	unsigned int ttl = 0, gd = 0;
 	float innerrad = radius * 0.707;
 	float ratio;
@@ -120,7 +116,7 @@ bool Vision::calculateValidBall(const CvPoint2D32f center, float radius, KSegmen
 		for (int j = center.y - innerrad; j <= center.y + innerrad; j++) {
 			if (!inbounds(i,j))
 				continue;
-			if (doSeg(i,j) == c)
+			if (doSeg(i, j) == c)
 				gd++;
 			ttl++;
 		}
@@ -130,7 +126,7 @@ bool Vision::calculateValidBall(const CvPoint2D32f center, float radius, KSegmen
 	//Outer circle
 	gd = 0;
 	ttl = 0;
-	for ( int i = center.x - radius; i <= center.x + radius; i++)
+	for (int i = center.x - radius; i <= center.x + radius; i++)
 		for (int j = center.y - radius; j <= center.y + radius; j++) {
 
 			if (!inbounds(i,j))
@@ -141,7 +137,7 @@ bool Vision::calculateValidBall(const CvPoint2D32f center, float radius, KSegmen
 			if (j > center.y - innerrad && j < center.y + innerrad)
 				continue;
 
-			if (doSeg(i,j) == c)
+			if (doSeg(i, j) == c)
 				gd++;
 			ttl++;
 		}
@@ -159,7 +155,7 @@ Vision::balldata_t Vision::locateBall(vector<CvPoint> cand) {
 
 	vector<CvPoint>::iterator i;
 	//For all detected points
-	cout<<"locateball"<<endl;
+	cout << "locateball" << endl;
 	for (i = cand.begin(); i != cand.end(); i++) {
 		vector<CvPoint> points;
 		vector<balldata_t>::iterator bd = history.begin();
@@ -215,7 +211,7 @@ Vision::balldata_t Vision::locateBall(vector<CvPoint> cand) {
 		CvPoint bottomleft = traceline(middle, cvPoint(-1, 1), orange);
 		if (inbounds(bottomleft.x,bottomleft.y))
 			points.push_back(bottomleft);
-        //TODO: Something smarter? like circle from 3 points?
+		//TODO: Something smarter? like circle from 3 points?
 		//Iterate for center
 		for (unsigned int j = 0; j < points.size(); j++) {
 			center.x += points[j].x;
@@ -224,7 +220,7 @@ Vision::balldata_t Vision::locateBall(vector<CvPoint> cand) {
 		center.x /= points.size();
 		center.y /= points.size();
 		float radius = 0;
-		cout <<"Find Center:"<<center.x<<" "<<center.y<<" "<<endl;
+		cout << "Find Center:" << center.x << " " << center.y << " " << endl;
 		//Iterate for radius
 		for (unsigned int j = 0; j < points.size(); j++) {
 			radius += CvDist(center,points[j]);//sqrt((center.x-points[i].x)*)(center.x-points[i].x)+(center.y-points[i].y)*)(center.y-points[i].y));
@@ -249,36 +245,35 @@ Vision::balldata_t Vision::locateBall(vector<CvPoint> cand) {
 		t.y = (*bd).y;
 		if ((*bd).r > best.r && calculateValidBall(t, (*bd).r, (KSegmentator::colormask_t) orange))
 			best = *bd;
-        cout<<best.x<<" "<<best.y<<" "<<endl;
+		cout << best.x << " " << best.y << " " << endl;
 		bd++;
 	}
-    return best;
+	return best;
 	/*ALValue ret;
 
-	ret.arraySetSize(0);
-	if (best.r == 0)
-		return ret;
-	ret.arrayPush("Ball");
-	ret.arrayPush(2 * best.r);
-	vector<std::string> nameyeah;
-	nameyeah.push_back("HeadYaw");
-	vector<float> retangles = motion->call<vector<float> > ("getAngles", nameyeah, true);
-	//double headpitch = retangles[0];// motion->getAngles("HeadPitch",true);
-	ALValue headYawAngle2 = memprxy->getData(AL::ALValue("Device/SubDeviceList/HeadYaw/Position/Sensor/Value"));//motion->getAngles(AL::ALValue("HeadYaw"), true);;//motion->getAngles("HeadYaw",true);
-	float headYawAngle = retangles[0];//motion->getAngles("HeadYaw",true);
-	///cout << "Head Yaw " << (float) headYawAngle << "Headyaw sketo " << (float)headYawAngle2<< endl;
-	//Bearing Warning not thru horizon! TODO
-	float tempdir = (headYawAngle - (0.5 - (double) (best.x) / (double) width) * HFov * TO_RAD);
+	 ret.arraySetSize(0);
+	 if (best.r == 0)
+	 return ret;
+	 ret.arrayPush("Ball");
+	 ret.arrayPush(2 * best.r);
+	 vector<std::string> nameyeah;
+	 nameyeah.push_back("HeadYaw");
+	 vector<float> retangles = motion->call<vector<float> > ("getAngles", nameyeah, true);
+	 //double headpitch = retangles[0];// motion->getAngles("HeadPitch",true);
+	 ALValue headYawAngle2 = memprxy->getData(AL::ALValue("Device/SubDeviceList/HeadYaw/Position/Sensor/Value"));//motion->getAngles(AL::ALValue("HeadYaw"), true);;//motion->getAngles("HeadYaw",true);
+	 float headYawAngle = retangles[0];//motion->getAngles("HeadYaw",true);
+	 ///cout << "Head Yaw " << (float) headYawAngle << "Headyaw sketo " << (float)headYawAngle2<< endl;
+	 //Bearing Warning not thru horizon! TODO
+	 float tempdir = (headYawAngle - (0.5 - (double) (best.x) / (double) width) * HFov * TO_RAD);
 
-	Acx[orange] = (0.5 - (double) (best.x) / (double) width) * HFov * TO_RAD;
-	Acy[orange] = (0.5 - (double) (best.y) / (double) height) * VFov * TO_RAD;
-	///cout << " Ball cx, cy" << tempdir << " Ball Diameter pixel" << (float)ret[1]<< endl;
+	 Acx[orange] = (0.5 - (double) (best.x) / (double) width) * HFov * TO_RAD;
+	 Acy[orange] = (0.5 - (double) (best.y) / (double) height) * VFov * TO_RAD;
+	 ///cout << " Ball cx, cy" << tempdir << " Ball Diameter pixel" << (float)ret[1]<< endl;
 
-	ret.arrayPush(tempdir * 1000);
-	return ret;*/
+	 ret.arrayPush(tempdir * 1000);
+	 return ret;*/
 
 }
-
 
 CvPoint Vision::traceline(CvPoint start, CvPoint vel, KSegmentator::colormask_t c) {
 
@@ -288,7 +283,7 @@ CvPoint Vision::traceline(CvPoint start, CvPoint vel, KSegmentator::colormask_t 
 	CvPoint latestValid = start;
 	/////cout << "traceline:"<<start.x<<" "<<start.y<<endl;
 	while (inbounds(curr.x,curr.y)) {
-		if (doSeg( curr.x, curr.y) != c) {
+		if (doSeg(curr.x, curr.y) != c) {
 			skipcount++;
 			globalcount++;
 		} else {

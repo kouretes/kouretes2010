@@ -64,12 +64,14 @@ int main(int argc, char *argv[]) {
 		AL::ALBroker::Ptr broker = AL::ALBroker::createBroker(brokerName, brokerIP, brokerPort, parentBrokerIP, parentBrokerPort);
 
 		SleepMs(1000);
-        Vision testV(broker);
-        testV.testrun();
-		//MotionController mc(broker);
-		//mc.start();
+		Vision testV(broker);
+		MotionController mc(broker);
+
+		testV.start();
+		mc.start();
 		SleepMs(1000);
-//		mc.join();
+		testV.join();
+		mc.join();
 
 		cout << "EXITING TEST" << endl;
 		exit(0);
@@ -89,11 +91,11 @@ int main(int argc, char *argv[]) {
 	sigemptyset(&new_action.sa_mask);
 	new_action.sa_flags = 0;
 
-	sigaction(SIGINT, &new_action, NULL );
+	sigaction(SIGINT, &new_action, NULL);
 # endif
 
 	while (1) {
-		SleepMs( 100 );
+		SleepMs(100);
 	}
 
 # ifdef _WIN32
