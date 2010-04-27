@@ -57,6 +57,5 @@ int main(int argc, char* argv[]) {
   cli.RegisterGenerator("--python_out", &py_generator,
                         "Generate Python source file.");
 
- // return cli.Run(argc, argv);
- return 0;
+  return cli.Run(argc, argv);
 }

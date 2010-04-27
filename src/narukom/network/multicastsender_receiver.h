@@ -25,8 +25,8 @@
 #include <string>
 #include <boost/asio.hpp>
 #include "boost/bind.hpp"
-#include "network_channel.h"
-#include "network_common.h"
+#include "network/network_channel.h"
+#include "network/network_common.h"
 // const short multicast_port = 30001;
 
 

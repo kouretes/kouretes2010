@@ -25,7 +25,7 @@ int main(int argc, char **argv) {
   ScoreKeeper* sc = new ScoreKeeper(false);
   Echo* echo = new Echo;
 // ping pong code
-cout << "Adding publishers to message queue " << endl;
+cout << "Adding publishers to message queue 2 " << endl;
   mq->add_publisher(ping);
   mq->add_publisher(pong);
 
@@ -50,6 +50,7 @@ cout << "Adding publishers to message queue " << endl;
 
 ping->join();
 pong->join();
+
 
 		
     

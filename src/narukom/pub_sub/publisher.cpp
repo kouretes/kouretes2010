@@ -28,22 +28,22 @@ using google::protobuf::Message;
 Publisher::Publisher()  
 {
   publisher_name = string("Default Publisher");
-  pub_msg_buf = NULL;
-  pub_msg_queue = NULL;
+  pub_msg_buf = 0;
+  pub_msg_queue = 0;
 }
   
 Publisher::Publisher( std::string pub_name )
 {
   publisher_name = pub_name;
-  pub_msg_buf = NULL;
-  pub_msg_queue = NULL;
+  pub_msg_buf = 0;
+  pub_msg_queue = 0;
 }
 
 Publisher::Publisher(const char* pub_name) 
 {
   publisher_name = string (pub_name);
-  pub_msg_buf = NULL;
-  pub_msg_queue = NULL;
+  pub_msg_buf = 0;
+  pub_msg_queue = 0;
 }
 Publisher::Publisher(const Publisher& other) 
 {
@@ -54,9 +54,9 @@ Publisher::Publisher(const Publisher& other)
 }
 Publisher::~Publisher()
 {
-  if(pub_msg_buf != NULL)
+  if(pub_msg_buf != 0)
     pub_msg_queue->remove_publisher(this);
-  if(pub_msg_buf != NULL)
+  if(pub_msg_buf != 0)
     delete pub_msg_buf;
 }
 
@@ -64,8 +64,8 @@ void Publisher::publish(Message* msg)
 {
   //  std::cout << "Publish << endl" << endl; 
 		static string localhost = "localhost";
-    if(pub_msg_buf == NULL)
-    {  if(pub_msg_queue == NULL)
+    if(pub_msg_buf == 0)
+    {  if(pub_msg_queue == 0)
       {
 				cout <<  "publisher: " << getName() << " with neither buffer nor queue " << endl;
 				return;

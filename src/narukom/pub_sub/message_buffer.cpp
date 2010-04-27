@@ -49,7 +49,7 @@ using google::protobuf::Message;
     std::string owner; 
     Mutex mutex;
 */
-MessageBuffer::MessageBuffer()
+MessageBuffer::MessageBuffer() : mutex()
 {
 	mutex.Lock();
   owner = "";
@@ -96,7 +96,7 @@ void MessageBuffer::add(google::protobuf::Message* msg)
       google::protobuf::Message* new_msg = msg->New();
       new_msg->CopyFrom(*msg);
       msg_buf->push_back(new_msg);
-			mutex.Unlock();
+      mutex.Unlock();
 
 }
 

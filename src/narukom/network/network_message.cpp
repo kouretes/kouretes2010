@@ -18,7 +18,7 @@
 
 */
 
-#include "network_message.h"
+#include "network/network_message.h"
 #include <iostream>
 #include <sstream>
 

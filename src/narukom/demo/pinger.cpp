@@ -86,7 +86,7 @@ void Pinger::start_service()
 }
 void Pinger::run()
 {
-//   cout << " Pinger---->Run " << Subscriber::getBuffer()->size() << endl;
+  // cout << " Pinger---->Run " << Subscriber::getBuffer()->size() << endl;
   
   if(Subscriber::getBuffer()->size() > 0)
     process_messages();
@@ -128,9 +128,9 @@ void Pinger::publish ( google::protobuf::Message* msg )
 {
 	static int delivered = 0;
     Publisher::publish ( msg );
-		if(++delivered == 20)
+		if(++delivered == 5)
  				Thread::stop();
-		PingMessage* p = (PingMessage*) msg;
+		//PingMessage* p = (PingMessage*) msg;
 	//	cout << "Successful  " << p->successful() <<" " <<  p->side()<< "address: " << p<< endl;
 }
 

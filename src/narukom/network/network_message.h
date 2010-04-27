@@ -22,12 +22,12 @@
 #define NETWORK_MESSAGE_H
 #include <google/protobuf/message.h>
 
-#include "network_packet.pb.h"
+#include "network/network_packet.pb.h"
 #include <google/protobuf/stubs/common.h>
 #include <cmath>
-#include "network_common.h"
+#include "network/network_common.h"
 #include <boost/date_time/posix_time/posix_time.hpp>
-#include <Basic.pb.h>
+#include <messages/Basic.pb.h>
 class NetworkMessage {
 // 	friend class NetworkMessageBuffer;
 	public:

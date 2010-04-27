@@ -9,6 +9,6 @@ private:
 public:
     Narukom();
     MessageQueue* get_message_queue();
-    ~Narukom(){delete mq;}
+    ~Narukom(){}//delete mq;}
 };
 #endif

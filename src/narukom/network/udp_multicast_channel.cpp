@@ -18,7 +18,7 @@
 
 */
 
-#include "udp_multicast_channel.h"
+#include "network/udp_multicast_channel.h"
 #include <google/protobuf/descriptor.h>
 #include "Nack.pb.h"
 

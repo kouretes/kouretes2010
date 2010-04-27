@@ -29,20 +29,20 @@ using google::protobuf::Message;
 Subscriber::Subscriber()
 {
   subscriber_name = string("Default Subscriber");
-  sub_msg_buf = NULL;
+  sub_msg_buf = 0;
 }
 
 Subscriber::Subscriber(const string& sb_name)
 {
  this->subscriber_name = sb_name;
  cout << "Initializesubscriber" << endl;
- sub_msg_buf = NULL;
+ sub_msg_buf = 0;
 }
 
 Subscriber::Subscriber(const char* sb_name)
 {
   this->subscriber_name = string(sb_name);
-  sub_msg_buf = NULL;
+  sub_msg_buf = 0;
   cout << "Initialize subscriber" << endl;
 }
 Subscriber::Subscriber(const Subscriber& other)
@@ -55,18 +55,18 @@ Subscriber::Subscriber(const Subscriber& other)
 
 Subscriber::~Subscriber()
 {
-  if(sub_msg_buf != NULL)
+  if(sub_msg_buf != 0)
     sub_msg_queue->remove_subscriber(this);
-  if(sub_msg_buf != NULL)
+  if(sub_msg_buf != 0)
     delete sub_msg_buf;
   
 }
 
 void Subscriber::process_messages(){
    // cout << "Subscriber Process_msg  called " << endl;
-    if(sub_msg_buf == NULL)
+    if(sub_msg_buf == 0)
     {
-      if( sub_msg_queue == NULL)
+      if( sub_msg_queue == 0)
       {
 	cout << "Subscriber with no queue" << endl;
 	return;

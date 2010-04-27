@@ -22,9 +22,9 @@
 #define CHANNEL_H
 #include <string>
 #include <vector>
-#include "publisher.h"
-#include "subscriber.h"
-#include "Thread.h"
+#include "pub_sub/publisher.h"
+#include "pub_sub/subscriber.h"
+#include "system/Thread.h"
 #include <google/protobuf/message.h>
 class ChannelCommand;
 

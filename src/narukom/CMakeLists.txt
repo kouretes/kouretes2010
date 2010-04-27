@@ -20,6 +20,6 @@ add_library(narukom SHARED narukom.cpp ${NARUKOM_SYSTEM_SRCS}  ${NARUKOM_PUB_SUB
     ${NARUKOM_MESSAGES_SRCS}  )
 
 target_link_libraries(narukom ${PROTOBUF_LIBRARIES} ${ZLIB_LIBRARIES}  ${TICPP_LIBRARIES})
-use_lib(narukom TOOLS BOOST LIBCORE PTHREAD BOOST_THREAD)
+use_lib(narukom TOOLS BOOST LIBCORE PTHREAD BOOST_THREAD BOOST_DATE_TIME)
 
 add_subdirectory(demo)

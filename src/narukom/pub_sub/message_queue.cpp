@@ -87,12 +87,14 @@ void MessageQueue::create_tree(TopicTree<string,MessageBuffer>* tree,const  stri
     {
         cout << "Could not load file " << file_name << endl;
         topic_tree->add_topic(string("global"));
-        topic_tree->add_topic_under(string("global"),string("robot1"));
-        topic_tree->add_topic_under(string("global"),string("robot2"));
-        topic_tree->add_topic_under(string("robot1"),string("vision"));
-        topic_tree->add_topic_under(string("robot2"),string("vision"));
-        topic_tree->add_topic_under(string("robot1"),string("motion"));
+        topic_tree->add_topic_under(string("global"),string("motion"));
+        topic_tree->add_topic_under(string("global"),string("sensors"));
+        topic_tree->add_topic_under(string("global"),string("vision"));
+        topic_tree->add_topic_under(string("global"),string("behavior"));
+        topic_tree->add_topic_under(string("global"),string("localization"));
+        topic_tree->add_topic_under(string("global"),string("communication"));
         topic_tree->add_topic_under(string("motion"),string("score"));
+        return;
 
     }
 //     doc.LoadFile();
@@ -247,8 +249,8 @@ void MessageQueue::process_queued_msg()
   boost::posix_time::ptime start =  boost::posix_time::microsec_clock::local_time();
   pub_mutex.Lock();
   
-//   cout << "SIZEEEEEEEEEEEEEE: " <<  publishers_buf->size()  <<endl;
-//   cout << "SIZEEEEEEEEEEEEEE: " <<  subscribers_buf->size()  <<endl;
+ //  cout << "SIZEE: " <<  publishers_buf->size()  <<endl;
+  // cout << "SIZEEEEEEEEEEEEEE: " <<  subscribers_buf->size()  <<endl;
 //    cout << "MessageQueue " << endl;
 //   bool flag = false;
   if(publishers_buf->size() > 0 )
@@ -256,10 +258,10 @@ void MessageQueue::process_queued_msg()
 //     flag = true;
     for(map<string,MessageBuffer*>::iterator it = publishers_buf->begin(); it != publishers_buf->end(); it++)
     {
-//       cout << "Message Size is " <<  endl; 
+      // cout << "Owner " <<  it->second->getOwner() <<  endl; 
       if(it->second->size() < 1 )
       {
-//         cout << "Message Size is " << it->second->size() << endl; 
+       //  cout << "Message Size is " << it->second->size() << endl; 
 				continue;
       }
       
@@ -288,7 +290,7 @@ void MessageQueue::process_queued_msg()
 	  if((*buf_it)->getOwner() == basic_msg->publisher() );
 	  else
 	  {
-//  	    cout << "MQ: " << (*buf_it)->getOwner() << " " <<  basic_msg->publisher() <<endl;
+  	  //  cout << "MQ: " << (*buf_it)->getOwner() << " " <<  basic_msg->publisher() <<endl;
 	    (*buf_it)->add(cur);
 	  }
 	}	
@@ -324,7 +326,7 @@ cout << "Starting Thread Main" << endl;
 running = true;
 while(running)
   process_queued_msg();
-
+boost::thread::yield();
 cout << "Ending Thread Main " << endl;
 
 }

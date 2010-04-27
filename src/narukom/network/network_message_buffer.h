@@ -20,15 +20,15 @@
 
 #ifndef NETWORK_MESSAGE_BUFFER_H
 #define NETWORK_MESSAGE_BUFFER_H
-#include "network_message.h"
+#include "network/network_message.h"
 #include <map>
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/ordered_index.hpp>
 #include <boost/multi_index/identity.hpp>
 #include <boost/multi_index/mem_fun.hpp>
 #include <boost/multi_index/composite_key.hpp>
-#include "network_channel.h"
-#include <Mutex.h>
+#include "network/network_channel.h"
+#include <system/Mutex.h>
 // class NetworkChannel;
 
 typedef boost::multi_index::multi_index_container<

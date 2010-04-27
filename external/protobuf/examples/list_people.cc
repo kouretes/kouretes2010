@@ -49,9 +49,7 @@ int main(int argc, char* argv[]) {
   }
 
   tutorial::AddressBook address_book;
-  tutorial::Person p;
-  cout << "Addressbook " << address_book.GetTypeName() << endl;
-  cout << "Persion " << p.GetTypeName() << endl;
+
   {
     // Read the existing address book.
     fstream input(argv[1], ios::in | ios::binary);

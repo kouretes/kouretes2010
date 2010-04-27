@@ -21,13 +21,13 @@
 #ifndef UDPMULCASTCHANNEL_H
 #define UDPMULCASTCHANNEL_H
 
-#include "Thread.h"
-#include "subscriber.h"
-#include "publisher.h"
+#include "system/Thread.h"
+#include "pub_sub/subscriber.h"
+#include "pub_sub/publisher.h"
 #include <boost/asio.hpp>
-#include "network_message_buffer.h"
-#include "network_channel.h"
-#include "multicastsender_receiver.h"
+#include "network/network_message_buffer.h"
+#include "network/network_channel.h"
+#include "network/multicastsender_receiver.h"
 
 class NackMessage;
 class UdpMulticastChannel :  public NetworkChannel

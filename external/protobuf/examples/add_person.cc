@@ -4,8 +4,6 @@
 #include <fstream>
 #include <string>
 #include "addressbook.pb.h"
-#include <google/protobuf/message.h>
-#include <google/protobuf/dynamic_message.h>
 using namespace std;
 
 // This function fills in a Person message based on user input.
@@ -25,6 +23,7 @@ void PromptForAddress(tutorial::Person* person) {
   if (!email.empty()) {
     person->set_email(email);
   }
+
   while (true) {
     cout << "Enter a phone number (or leave blank to finish): ";
     string number;
@@ -78,18 +77,7 @@ int main(int argc, char* argv[]) {
   }
 
   // Add an address.
-  tutorial::Person* p = new tutorial::Person();
-  p->set_name("myname");
-  p->set_id(123);
-  //google::protobuf::DynamicMessageFactory mf;
-  google::protobuf::Message*  msg1 = p->New();
-  google::protobuf::Message* msg = msg1->New();
-  msg->CopyFrom(*p);
-  tutorial::Person* pp = address_book.add_person();
-  pp->CopyFrom(*msg);
-  p = address_book.add_person(); 
-  PromptForAddress(p);
- 
+  PromptForAddress(address_book.add_person());
 
   {
     // Write the new address book back to disk.

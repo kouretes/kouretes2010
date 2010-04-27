@@ -18,12 +18,12 @@
 
 */
 
-#include "network_channel.h"
-#include "network_message_buffer.h"
-#include "Basic.pb.h"
-#include "pingpong.pb.h"
+#include "network/network_channel.h"
+#include "network/network_message_buffer.h"
+#include "messages/Basic.pb.h"
+#include "messages/pingpong.pb.h"
 //#include "image.pb.h"
-#include "network_packet.pb.h"
+#include "network/network_packet.pb.h"
 using std::cout;
 using std::endl;
 void NetworkChannel::deliver(NetworkMessage* msg,NetworkMessageBuffer* buf){

@@ -8,10 +8,10 @@
 #ifndef CATALOG_H_
 #define CATALOG_H_
 
-#include "Thread.h"
-#include "publisher.h"
-#include "subscriber.h"
-#include "channel_info.h"
+#include "system/Thread.h"
+#include "pub_sub/publisher.h"
+#include "pub_sub/subscriber.h"
+#include "network/channel_info.h"
 #include <map>
 
 

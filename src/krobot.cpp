@@ -20,6 +20,11 @@
 #include "motion/motion_controller.h"
 #include "vision/vision.h"
 
+#include "localization/localization.h"
+#include "behavior/behavior.h"
+#include "sensors/sensors.h"
+#include "narukom.h"
+
 using namespace AL;
 using namespace std;
 
@@ -58,32 +63,47 @@ int main(int argc, char *argv[]) {
 
 	std::cout << "Try to connect to parent Broker at ip :" << parentBrokerIP << " and port : " << parentBrokerPort << std::endl;
 	std::cout << "Start the server bind on this ip :  " << brokerIP << " and port : " << brokerPort << std::endl;
+	Narukom* n = new Narukom();
+	MotionController* mc;
+	SensorController* sc;
+	BehaviorController* bc;
+	LocController* lc;
+	Vision* testV;
+	MessageQueue *mq = n->get_message_queue();
 
 	try {
 
 		AL::ALBroker::Ptr broker = AL::ALBroker::createBroker(brokerName, brokerIP, brokerPort, parentBrokerIP, parentBrokerPort);
 
 		SleepMs(1000);
-		Vision testV(broker);
-		MotionController mc(broker);
-
-		testV.start();
-		mc.start();
+		testV = new Vision(broker);
+		mc = new MotionController(broker);
+		testV->start();
+		mc->start();
 		SleepMs(1000);
-		testV.join();
-		mc.join();
-
-		cout << "EXITING TEST" << endl;
-		exit(0);
 
 	} catch (AL::ALError &e) {
+		delete n;
 		std::cout << "-----------------------------------------------------" << std::endl;
 		std::cout << "Creation of broker failed. Application will exit now." << std::endl;
 		std::cout << "-----------------------------------------------------" << std::endl;
 		std::cout << e.toString() << std::endl;
 		exit(0);
 	}
-
+	cout << "Starting Controllers..." << endl;
+	sc = new SensorController(mq); 
+	lc= new LocController(mq); 
+	bc = new BehaviorController(mq); 
+	sc->start();
+	lc->start();
+	bc->start();
+	lc->join();
+	bc->join();
+	sc->join();
+	testV->join();
+	mc->join();
+	cout << "EXITING TEST" << endl;
+	exit(0);
 # ifndef _WIN32
 	struct sigaction new_action;
 	/* Set up the structure to specify the new action. */

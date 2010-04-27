@@ -26,7 +26,7 @@ using std::cerr;
 void Ponger::printGame(int other,int myside)
 {
   //      "         []         "
-  cerr << "--------------------" << endl;
+  cout << "--------------------" << endl;
 // 	"--------------------"
 // 	"|        []        O\n"
 // 	"|        []         \n"
@@ -40,26 +40,26 @@ void Ponger::printGame(int other,int myside)
   {
     if(other == myside)
     {
-      cerr << "|        []        O\n" <<    "|        []         \n" ;//<<endl;
-      cerr << "         []        |\n" <<    "         []         |"  << endl;}
+      cout << "|        []        O\n" <<    "|        []         \n" ;//<<endl;
+      cout << "         []        |\n" <<    "         []         |"  << endl;}
     else
     {
-      cerr << "|        []       O|\n" <<    "|        []        |\n" ;//<< endl;
-      cerr << "         []         \n" <<    "         []          "  << endl;
+      cout << "|        []       O|\n" <<    "|        []        |\n" ;//<< endl;
+      cout << "         []         \n" <<    "         []          "  << endl;
     }
   }
   else
   {
     if(other == myside)
     {
-      cerr << "         []        |\n" <<    "         []        |\n" ;//<<endl;
-      cerr << "|        []        O\n" <<    "|        []         "  << endl;}
+      cout << "         []        |\n" <<    "         []        |\n" ;//<<endl;
+      cout << "|        []        O\n" <<    "|        []         "  << endl;}
     else
     {
-      cerr << "         []         \n" <<    "         []          \n";// << endl;
-      cerr << "|        []       O|\n" <<    "|        []        |"  << endl;
+      cout << "         []         \n" <<    "         []          \n";// << endl;
+      cout << "|        []       O|\n" <<    "|        []        |"  << endl;
     }
-  cerr << "--------------------" << endl;
+  cout << "--------------------" << endl;
   }
 
 }
@@ -96,11 +96,11 @@ void Ponger::run()
 
 void Ponger::process_messages()
 {
-  static int delivered = 0;
+
         MessageBuffer* sub_buf = Subscriber::getBuffer();
-    cerr << "Ponger " << endl;
+    cout << "Ponger " << endl;
     if(sub_buf == NULL)
-      cerr << "None Unprocessed Buffers" << endl;
+      cout << "None Unprocessed Buffers" << endl;
     google::protobuf::Message*  cur = sub_buf->remove_head();
   
   
@@ -114,19 +114,21 @@ void Ponger::process_messages()
       }
        else
       {
-	cerr << "Unknown Message Type: " << cur->GetTypeName() << endl; 
+	cout << "Unknown Message Type: " << cur->GetTypeName() << endl;
       }
       delete cur; 
       cur = sub_buf->remove_head();
       
     }
-    if(delivered++ == 5)
-      Thread::stop();
+
   //  sleep(2);
 }
 
 void Ponger::publish ( google::protobuf::Message* msg )
 {
+	  static int delivered = 0;
     Publisher::publish ( msg );
+    if(++delivered == 5)
+      Thread::stop();
 }
 
