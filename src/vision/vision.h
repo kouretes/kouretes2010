@@ -7,6 +7,7 @@
 
   //#include "albrokermanager.h"
   #include "alptr.h"
+  #include "almemoryproxy.h"
   #include <opencv/cv.h>
   #include <opencv/highgui.h>
 
@@ -20,6 +21,7 @@
         Vision(AL::ALPtr<AL::ALBroker> pbroker):ext(pbroker),type(VISION_CSPACE){
          cout<<"Vision()"<<endl;
           rawImage=ext.allocateImage();
+          memory=pbroker->getMemoryProxy();
 
           ifstream *config = new ifstream("segmentation.conf");
           seg= new KSegmentator(*config);//TODO PATH!!!
@@ -36,6 +38,7 @@
                 cout<<t.tv_sec<<" "<<t.tv_nsec<<endl;
                 //SleepMs(250);
                 gridScan(orange);
+
                 char * segImage=segIpl->imageData;
                 for( int i=2;i<rawImage->width-2;i++)
                 {
@@ -125,6 +128,9 @@
           }
 
    private:
+
+        AL::ALPtr<AL::ALMemoryProxy> memory;
+
         //Ball Detection related
         typedef struct balldata{
                 float x, y;

@@ -88,6 +88,23 @@ void Vision::gridScan(const KSegmentator::colormask_t color)
 	cout<<"Ballpixelsize:"<<ballpixels.size()<<endl;
 	balldata_t b=locateBall(ballpixels);
     cout<<b.x<<" "<<b.y<<" "<< b.r<<endl;
+#define  VFov 34.8f
+#define  HFov 46.4f
+#define TO_RAD 0.01745329f
+    float x= (0.5 - (double) (b.x) / (double) rawImage->width) * HFov * TO_RAD;
+	float y=(0.5 - (double) (b.y) / (double) rawImage->height) * VFov * TO_RAD;
+	float r=b.r*(HFov / (double) rawImage->width);
+	if(b.r>0)
+	{
+        memory->insertData("kouretes/Ball/cx",x);  // change in Head Yaw
+        memory->insertData("kouretes/Ball/cy",y);  // change in Head Pitch
+        memory->insertData("kouretes/Ball/radius",r);  // change in Head Pitch
+        memory->insertData("kouretes/Ball/found",1.0f);  // change
+	}
+	else
+	{
+	    memory->insertData("kouretes/Ball/found",.0f);  // change
+	}
 }
 
 /**
