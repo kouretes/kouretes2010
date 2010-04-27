@@ -305,3 +305,83 @@ CvPoint Vision::traceline(CvPoint start, CvPoint vel, KSegmentator::colormask_t 
 	//cout<<"ret"<<latestValid.x<<" "<<latestValid.y<<endl;
 	return latestValid;
 }
+
+void Vision::cvShowSegmented()
+{
+
+        char * segImage = segIpl->imageData;
+        for (int i = 2; i < rawImage->width - 2; i++)
+        {
+            for (int j = 2; j < rawImage->height - 2; j++)
+            {
+
+                //*(imgA+i*width+j)=seg->classifyPixel(yuv);
+
+
+                //segImage[j][i] = seg-/>classifyPixel(yuv);//classifyPixel(fIplImageHeader, i, j, type);
+                //cout<<"Test3"<<endl;
+                KSegmentator::colormask_t k = doSeg(i, j);//sImage[j][i];//fIplImageHeader,i,j,kYUVColorSpace
+                //				if (k == 5)
+                // cout << "Pixel at i " << i << " j " << j << " value " << (int) k << endl;
+                int width = rawImage->width;
+                switch (k)
+                {
+
+                case red://RED
+                    segImage[j * 3 * width + i * 3 + 2] = 255;
+                    segImage[j * 3 * width + i * 3 + 1] = 0;
+                    segImage[j * 3 * width + i * 3] = 0;
+                    break;
+                case blue://BlUE
+                    segImage[j * 3 * width + i * 3 + 2] = 0;
+                    segImage[j * 3 * width + i * 3 + 1] = 0;
+                    segImage[j * 3 * width + i * 3] = 255;
+                    break;
+                case green://GREEN
+                    segImage[j * 3 * width + i * 3 + 2] = 60;
+                    segImage[j * 3 * width + i * 3 + 1] = 120;
+                    segImage[j * 3 * width + i * 3] = 60;
+                    break;
+                case skyblue://SkyBlue
+                    segImage[j * 3 * width + i * 3 + 2] = 0;
+                    segImage[j * 3 * width + i * 3 + 1] = 107;
+                    segImage[j * 3 * width + i * 3] = 228;
+                    break;
+                case yellow://Yellow
+                    segImage[j * 3 * width + i * 3 + 2] = 255;
+                    segImage[j * 3 * width + i * 3 + 1] = 255;
+                    segImage[j * 3 * width + i * 3] = 0;
+                    break;
+                case orange://Orange
+                    segImage[j * 3 * width + i * 3 + 2] = 255;
+                    segImage[j * 3 * width + i * 3 + 1] = 180;
+                    segImage[j * 3 * width + i * 3] = 0;
+                    break;
+                case white://
+                    segImage[j * 3 * width + i * 3 + 2] = 255;
+                    segImage[j * 3 * width + i * 3 + 1] = 255;
+                    segImage[j * 3 * width + i * 3] = 255;
+                    break;
+                default:
+                    segImage[j * 3 * width + i * 3 + 2] = 0;
+                    segImage[j * 3 * width + i * 3 + 1] = 0;
+                    segImage[j * 3 * width + i * 3] = 0;
+                    break;
+                }
+                //cout<< hsl[0]<<","<<hsl[1]<<","<<hsl[2]<<endl<<endl;
+
+            }
+            //cout<<endl;
+        }
+        cvShowImage("win1", segIpl);
+
+        /*std:: vector <std::string> names;
+         std:: vector <float> pos;
+         names.push_back("HeadYaw");
+         names.push_back("HeadPitch");
+         pos=m->call<vector<float> >("getAngles",names,true);
+         pos[0]=pos[0]+0.1;
+         pos[1]=pos[1]+0.1;
+         m->callVoid("setAngles",names,pos,0.8);*/
+        int k = cvWaitKey(250);
+}

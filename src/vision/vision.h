@@ -18,13 +18,16 @@ class Vision : public Thread
 
 public:
 
-    Vision(AL::ALPtr<AL::ALBroker> pbroker) :
-            ext(pbroker), type(VISION_CSPACE)
+    Vision(AL::ALPtr<AL::ALBroker> pbroker,bool gui=false) :
+            ext(pbroker), type(VISION_CSPACE),cvHighgui(gui)
     {
         cout << "Vision()" << endl;
         rawImage = ext.allocateImage();
-        segIpl = cvCreateImage(cvSize(rawImage->width, rawImage->height), IPL_DEPTH_8U, 3);
-        cvNamedWindow("win1", CV_WINDOW_AUTOSIZE);
+        if(cvHighgui)
+        {
+            segIpl = cvCreateImage(cvSize(rawImage->width, rawImage->height), IPL_DEPTH_8U, 3);
+            cvNamedWindow("win1", CV_WINDOW_AUTOSIZE);
+        }
         memory = pbroker->getMemoryProxy();
 
         ifstream *config = new ifstream("segmentation.conf");
@@ -39,82 +42,10 @@ public:
         cout << t.tv_sec << " " << t.tv_nsec << endl;
         //SleepMs(250);
         gridScan(orange);
-
-        char * segImage = segIpl->imageData;
-        for (int i = 2; i < rawImage->width - 2; i++)
-        {
-            for (int j = 2; j < rawImage->height - 2; j++)
-            {
-
-                //*(imgA+i*width+j)=seg->classifyPixel(yuv);
+        if(cvHighgui)
+            cvShowSegmented();
 
 
-                //segImage[j][i] = seg-/>classifyPixel(yuv);//classifyPixel(fIplImageHeader, i, j, type);
-                //cout<<"Test3"<<endl;
-                KSegmentator::colormask_t k = doSeg(i, j);//sImage[j][i];//fIplImageHeader,i,j,kYUVColorSpace
-                //				if (k == 5)
-                // cout << "Pixel at i " << i << " j " << j << " value " << (int) k << endl;
-                int width = rawImage->width;
-                switch (k)
-                {
-
-                case red://RED
-                    segImage[j * 3 * width + i * 3 + 2] = 255;
-                    segImage[j * 3 * width + i * 3 + 1] = 0;
-                    segImage[j * 3 * width + i * 3] = 0;
-                    break;
-                case blue://BlUE
-                    segImage[j * 3 * width + i * 3 + 2] = 0;
-                    segImage[j * 3 * width + i * 3 + 1] = 0;
-                    segImage[j * 3 * width + i * 3] = 255;
-                    break;
-                case green://GREEN
-                    segImage[j * 3 * width + i * 3 + 2] = 60;
-                    segImage[j * 3 * width + i * 3 + 1] = 120;
-                    segImage[j * 3 * width + i * 3] = 60;
-                    break;
-                case skyblue://SkyBlue
-                    segImage[j * 3 * width + i * 3 + 2] = 0;
-                    segImage[j * 3 * width + i * 3 + 1] = 107;
-                    segImage[j * 3 * width + i * 3] = 228;
-                    break;
-                case yellow://Yellow
-                    segImage[j * 3 * width + i * 3 + 2] = 255;
-                    segImage[j * 3 * width + i * 3 + 1] = 255;
-                    segImage[j * 3 * width + i * 3] = 0;
-                    break;
-                case orange://Orange
-                    segImage[j * 3 * width + i * 3 + 2] = 255;
-                    segImage[j * 3 * width + i * 3 + 1] = 180;
-                    segImage[j * 3 * width + i * 3] = 0;
-                    break;
-                case white://
-                    segImage[j * 3 * width + i * 3 + 2] = 255;
-                    segImage[j * 3 * width + i * 3 + 1] = 255;
-                    segImage[j * 3 * width + i * 3] = 255;
-                    break;
-                default:
-                    segImage[j * 3 * width + i * 3 + 2] = 0;
-                    segImage[j * 3 * width + i * 3 + 1] = 0;
-                    segImage[j * 3 * width + i * 3] = 0;
-                    break;
-                }
-                //cout<< hsl[0]<<","<<hsl[1]<<","<<hsl[2]<<endl<<endl;
-
-            }
-            //cout<<endl;
-        }
-        cvShowImage("win1", segIpl);
-
-        /*std:: vector <std::string> names;
-         std:: vector <float> pos;
-         names.push_back("HeadYaw");
-         names.push_back("HeadPitch");
-         pos=m->call<vector<float> >("getAngles",names,true);
-         pos[0]=pos[0]+0.1;
-         pos[1]=pos[1]+0.1;
-         m->callVoid("setAngles",names,pos,0.8);*/
-        int k = cvWaitKey(250);
 
 
     }
@@ -129,7 +60,7 @@ public:
     }
 
 private:
-
+    bool cvHighgui;
     AL::ALPtr<AL::ALMemoryProxy> memory;
 
     //Ball Detection related
@@ -169,9 +100,8 @@ private:
             return 0;
         }
 
-    }
-    ;
-
+    } ;
+    void cvShowSegmented();
 };
 
 #endif

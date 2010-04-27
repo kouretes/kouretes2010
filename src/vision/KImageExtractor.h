@@ -23,7 +23,7 @@
  #define VISION_GVMNAME "KImageExtractor"
 
  #define REMOTE_ON 1
- #undef RAW
+ #define  RAW
 
  using namespace AL;
  using namespace std;
