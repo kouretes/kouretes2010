@@ -27,6 +27,7 @@ void BehaviorController::run() {
 	MessageBuffer* sub_buf = Subscriber::getBuffer();
 	if (sub_buf->size() > 0)
         process_messages();
+    usleep(10000);
 	//else
 	//	{
 	//cout << "create traffic" << endl;
