@@ -19,6 +19,12 @@
 
 class MotionController : public Thread, public Publisher, public Subscriber{
 
+public:
+
+	MotionController(AL::ALPtr<AL::ALBroker> pbroker, MessageQueue* mq);
+
+	void run();
+
 private:
 
 	AL::ALPtr<AL::ALMotionProxy> motion;
@@ -33,50 +39,18 @@ private:
 	int counter;
 
 	int walkPID;
-	std::string walkCommand;
 	float walkParam1, walkParam2, walkParam3, walkParam4;
 
 	int headPID;
-	std::string headCommand;
 	float headParam1, headParam2;
-	AL::ALValue names, values;
 
 	int actionPID;
+	
+	AL::ALValue names, values;
 
 	MessageBuffer* sub_buffer;
 	MotionMessage* mm;
 
-public:
-
-	MotionController(AL::ALPtr<AL::ALBroker> pbroker, MessageQueue* mq) {
-	    	try {motion = pbroker->getMotionProxy();}
-		catch (AL::ALError& e) {cout << "Error in getting motion proxy" << std::endl;}
-		motion->setStiffnesses("Body", 1.0);
-
-	    	try {memory = pbroker->getMemoryProxy();}
-		catch (AL::ALError& e) {cout << "Error in getting memory proxy" << std::endl;}
-
-		AccZ = (float*) memory->getDataPtr("Device/SubDeviceList/InertialSensor/AccZ/Sensor/Value");
-
-		if (mq != 0){
-			mq->add_publisher(this);
-  			mq->add_subscriber(this);
-			mq->subscribe("motion",this,0);
-		}
-		sub_buffer = Subscriber::getBuffer();
-
-		robotDown = false;
-		robotUp = true;
-
-		walkPID = 0;
-		headPID = 0;
-		actionPID = 0;
-
-		counter = 0;
-
-	}
-
-	void run();
 	void commands();
 	void mglrun();
 	void process_messages();
@@ -89,6 +63,9 @@ public:
 	void ALstandUp2010();
 	void ALstandUpFront2010();
 	void ALstandUpBack2010();
+	
+	void loadActions();
+	AL::ALValue LieDown_names, LieDown_times, LieDown_keys;
 
 };
 
