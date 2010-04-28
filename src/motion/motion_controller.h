@@ -14,7 +14,7 @@
 #include "alvalue.h"
 #include "messages/motion.pb.h"
 
-#define WEBOTS
+//#define WEBOTS
 
 
 class MotionController : public Thread, public Publisher, public Subscriber{
@@ -48,7 +48,7 @@ private:
 
 public:
 
-	MotionController(AL::ALPtr<AL::ALBroker> pbroker, MessageQueue* mq) {
+	MotionController(AL::ALPtr<AL::ALBroker> pbroker, MessageQueue* mq):Publisher("MotionController"), Subscriber("MotionController"){
 	    	try {motion = pbroker->getMotionProxy();}
 		catch (AL::ALError& e) {cout << "Error in getting motion proxy" << std::endl;}
 		motion->setStiffnesses("Body", 1.0);
@@ -73,7 +73,7 @@ public:
 		actionPID = 0;
 
 		counter = 0;
-
+        mm=NULL;
 	}
 
 	void run();

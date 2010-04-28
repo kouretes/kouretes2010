@@ -79,7 +79,7 @@ void BehaviorController::process_messages() {
             BallTrackMessage * bmsg= static_cast<BallTrackMessage*>(cur);
 
             float overshootfix = bmsg->radius();
-            overshootfix = 0.8 * (0.4f - overshootfix);
+            overshootfix = 2 * (0.4f - overshootfix);
 			cout << "Overshoot Value: " << overshootfix << endl;
 			float cx = bmsg->cx();
 			float cy = bmsg->cy();
@@ -87,14 +87,15 @@ void BehaviorController::process_messages() {
 				//Sending command to motion
 				mot->set_topic("motion");
 				mot->set_command("changeHead");
-				mot->add_parameter(0.85f * overshootfix * (cx));
-				mot->add_parameter(-1.1f * overshootfix * (cy));
-				//Publisher::publish(mot);
+				mot->set_parameter(1,0.9f * (cx));
+				mot->set_parameter(2,0.9f * (cy));
+				Publisher::publish(mot);
+				cout<<"I want the freaking head to move towards (cx,cy):"<<0.9f * (cx)<<" "<<-0.9f * (cy)<<endl;
 				 //if (abs(cx) > 0.015 && abs(cy) > 0.015) {
-				     cout<<"Track Ball changeHead"<<endl;
-				     memory->insertData("kouretes/HeadCommand", AL::ALValue("changeHead"));
-                     memory->insertData("kouretes/HeadParam1", 0.85f * overshootfix * (cx)); // change in Head Yaw
-                     memory->insertData("kouretes/HeadParam2", -1.1f * overshootfix * (cy)); // change in Head Pitch
+				     //cout<<"Track Ball changeHead"<<endl;
+				     //memory->insertData("kouretes/HeadCommand", AL::ALValue("changeHead"));
+                     //memory->insertData("kouretes/HeadParam1", 0.85f * overshootfix * (cx)); // change in Head Yaw
+                     //memory->insertData("kouretes/HeadParam2", -1.1f * overshootfix * (cy)); // change in Head Pitch
                 //}
 			//}
 

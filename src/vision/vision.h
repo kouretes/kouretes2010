@@ -31,7 +31,7 @@ public:
     Vision(AL::ALPtr<AL::ALBroker> pbroker, MessageQueue *mq,bool gui=false) :
             ext(pbroker),cvHighgui(gui),type(VISION_CSPACE)
     {
-        cout << "Vision()" << endl;
+        cout << "Vision():" ;//<< endl;
         rawImage = ext.allocateImage();
         if(cvHighgui)
         {
@@ -43,6 +43,7 @@ public:
         ifstream *config = new ifstream("segmentation.conf");
         seg = new KSegmentator(*config);//TODO PATH!!!
         mq->add_publisher(this);
+        cout<<"Done!"<<endl;
 
 
     }

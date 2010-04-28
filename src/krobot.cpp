@@ -82,7 +82,7 @@ int main(int argc, char *argv[]) {
 		memory = broker->getMemoryProxy();
 
 		SleepMs(1000);
-		mc = new MotionController(broker);
+		mc = new MotionController(broker,mq);
         testV = new Vision(broker,mq);
 		bc = new BehaviorController(broker,mq);
 		SleepMs(1000);
