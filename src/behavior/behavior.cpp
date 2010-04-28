@@ -17,6 +17,8 @@ BehaviorController::BehaviorController(AL::ALPtr<AL::ALBroker> pbroker, MessageQ
 	}
 
 	mot = new MotionMessage();
+	mot->add_parameter(0.0f);
+	mot->add_parameter(0.0f);
 	//TestMessage* tt = new TestMessage();
 	//tt->set_topic("localization");
 	//Publisher::publish(tt);
@@ -87,8 +89,8 @@ void BehaviorController::process_messages() {
 				//Sending command to motion
 				mot->set_topic("motion");
 				mot->set_command("changeHead");
-				mot->set_parameter(1,0.9f * (cx));
-				mot->set_parameter(2,0.9f * (cy));
+				mot->set_parameter(0,0.9f * (cx));
+				mot->set_parameter(1,-0.9f * (cy));
 				Publisher::publish(mot);
 				cout<<"I want the freaking head to move towards (cx,cy):"<<0.9f * (cx)<<" "<<-0.9f * (cy)<<endl;
 				 //if (abs(cx) > 0.015 && abs(cy) > 0.015) {
