@@ -1,4 +1,4 @@
-message MotionCommand{
+message MotionMessage{
 	required string host 		= 1 	[default = "localhost"];
 	required string publisher 	= 2 	[default = "" ];
 	required string topic 		= 3 	[default = "global"];

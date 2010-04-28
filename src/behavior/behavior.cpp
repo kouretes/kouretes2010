@@ -16,7 +16,7 @@ BehaviorController::BehaviorController(AL::ALPtr<AL::ALBroker> pbroker, MessageQ
 		cout << "Error in getting memory proxy" << std::endl;
 	}
 
-	mot = new MotionCommand();
+	mot = new MotionMessage();
 	//TestMessage* tt = new TestMessage();
 	//tt->set_topic("localization");
 	//Publisher::publish(tt);

@@ -12,9 +12,9 @@
 
 namespace {
 
-const ::google::protobuf::Descriptor* MotionCommand_descriptor_ = NULL;
+const ::google::protobuf::Descriptor* MotionMessage_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
-  MotionCommand_reflection_ = NULL;
+  MotionMessage_reflection_ = NULL;
 
 }  // namespace
 
@@ -25,27 +25,27 @@ void protobuf_AssignDesc_motion_2eproto() {
     ::google::protobuf::DescriptorPool::generated_pool()->FindFileByName(
       "motion.proto");
   GOOGLE_CHECK(file != NULL);
-  MotionCommand_descriptor_ = file->message_type(0);
-  static const int MotionCommand_offsets_[7] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MotionCommand, host_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MotionCommand, publisher_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MotionCommand, topic_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MotionCommand, timeout_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MotionCommand, timestamp_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MotionCommand, command_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MotionCommand, parameter_),
+  MotionMessage_descriptor_ = file->message_type(0);
+  static const int MotionMessage_offsets_[7] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MotionMessage, host_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MotionMessage, publisher_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MotionMessage, topic_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MotionMessage, timeout_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MotionMessage, timestamp_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MotionMessage, command_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MotionMessage, parameter_),
   };
-  MotionCommand_reflection_ =
+  MotionMessage_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
-      MotionCommand_descriptor_,
-      MotionCommand::default_instance_,
-      MotionCommand_offsets_,
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MotionCommand, _has_bits_[0]),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MotionCommand, _unknown_fields_),
+      MotionMessage_descriptor_,
+      MotionMessage::default_instance_,
+      MotionMessage_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MotionMessage, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MotionMessage, _unknown_fields_),
       -1,
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
-      sizeof(MotionCommand));
+      sizeof(MotionMessage));
 }
 
 namespace {
@@ -59,14 +59,14 @@ inline void protobuf_AssignDescriptorsOnce() {
 void protobuf_RegisterTypes(const ::std::string&) {
   protobuf_AssignDescriptorsOnce();
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-    MotionCommand_descriptor_, &MotionCommand::default_instance());
+    MotionMessage_descriptor_, &MotionMessage::default_instance());
 }
 
 }  // namespace
 
 void protobuf_ShutdownFile_motion_2eproto() {
-  delete MotionCommand::default_instance_;
-  delete MotionCommand_reflection_;
+  delete MotionMessage::default_instance_;
+  delete MotionMessage_reflection_;
 }
 
 void protobuf_AddDesc_motion_2eproto() {
@@ -76,15 +76,15 @@ void protobuf_AddDesc_motion_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\014motion.proto\"\243\001\n\rMotionCommand\022\027\n\004host"
+    "\n\014motion.proto\"\243\001\n\rMotionMessage\022\027\n\004host"
     "\030\001 \002(\t:\tlocalhost\022\023\n\tpublisher\030\002 \002(\t:\000\022\025"
     "\n\005topic\030\003 \002(\t:\006global\022\022\n\007timeout\030\004 \002(\005:\001"
     "0\022\023\n\ttimestamp\030\005 \002(\t:\000\022\021\n\007command\030\006 \002(\t:"
     "\000\022\021\n\tparameter\030\007 \003(\002", 180);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "motion.proto", &protobuf_RegisterTypes);
-  MotionCommand::default_instance_ = new MotionCommand();
-  MotionCommand::default_instance_->InitAsDefaultInstance();
+  MotionMessage::default_instance_ = new MotionMessage();
+  MotionMessage::default_instance_->InitAsDefaultInstance();
   ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_motion_2eproto);
 }
 
@@ -98,36 +98,36 @@ struct StaticDescriptorInitializer_motion_2eproto {
 
 // ===================================================================
 
-const ::std::string MotionCommand::_default_host_("localhost");
-const ::std::string MotionCommand::_default_publisher_;
-const ::std::string MotionCommand::_default_topic_("global");
-const ::std::string MotionCommand::_default_timestamp_;
-const ::std::string MotionCommand::_default_command_;
+const ::std::string MotionMessage::_default_host_("localhost");
+const ::std::string MotionMessage::_default_publisher_;
+const ::std::string MotionMessage::_default_topic_("global");
+const ::std::string MotionMessage::_default_timestamp_;
+const ::std::string MotionMessage::_default_command_;
 #ifndef _MSC_VER
-const int MotionCommand::kHostFieldNumber;
-const int MotionCommand::kPublisherFieldNumber;
-const int MotionCommand::kTopicFieldNumber;
-const int MotionCommand::kTimeoutFieldNumber;
-const int MotionCommand::kTimestampFieldNumber;
-const int MotionCommand::kCommandFieldNumber;
-const int MotionCommand::kParameterFieldNumber;
+const int MotionMessage::kHostFieldNumber;
+const int MotionMessage::kPublisherFieldNumber;
+const int MotionMessage::kTopicFieldNumber;
+const int MotionMessage::kTimeoutFieldNumber;
+const int MotionMessage::kTimestampFieldNumber;
+const int MotionMessage::kCommandFieldNumber;
+const int MotionMessage::kParameterFieldNumber;
 #endif  // !_MSC_VER
 
-MotionCommand::MotionCommand()
+MotionMessage::MotionMessage()
   : ::google::protobuf::Message() {
   SharedCtor();
 }
 
-void MotionCommand::InitAsDefaultInstance() {
+void MotionMessage::InitAsDefaultInstance() {
 }
 
-MotionCommand::MotionCommand(const MotionCommand& from)
+MotionMessage::MotionMessage(const MotionMessage& from)
   : ::google::protobuf::Message() {
   SharedCtor();
   MergeFrom(from);
 }
 
-void MotionCommand::SharedCtor() {
+void MotionMessage::SharedCtor() {
   _cached_size_ = 0;
   host_ = const_cast< ::std::string*>(&_default_host_);
   publisher_ = const_cast< ::std::string*>(&_default_publisher_);
@@ -138,11 +138,11 @@ void MotionCommand::SharedCtor() {
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
-MotionCommand::~MotionCommand() {
+MotionMessage::~MotionMessage() {
   SharedDtor();
 }
 
-void MotionCommand::SharedDtor() {
+void MotionMessage::SharedDtor() {
   if (host_ != &_default_host_) {
     delete host_;
   }
@@ -162,27 +162,27 @@ void MotionCommand::SharedDtor() {
   }
 }
 
-void MotionCommand::SetCachedSize(int size) const {
+void MotionMessage::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
   _cached_size_ = size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
-const ::google::protobuf::Descriptor* MotionCommand::descriptor() {
+const ::google::protobuf::Descriptor* MotionMessage::descriptor() {
   protobuf_AssignDescriptorsOnce();
-  return MotionCommand_descriptor_;
+  return MotionMessage_descriptor_;
 }
 
-const MotionCommand& MotionCommand::default_instance() {
+const MotionMessage& MotionMessage::default_instance() {
   if (default_instance_ == NULL) protobuf_AddDesc_motion_2eproto();  return *default_instance_;
 }
 
-MotionCommand* MotionCommand::default_instance_ = NULL;
+MotionMessage* MotionMessage::default_instance_ = NULL;
 
-MotionCommand* MotionCommand::New() const {
-  return new MotionCommand;
+MotionMessage* MotionMessage::New() const {
+  return new MotionMessage;
 }
 
-void MotionCommand::Clear() {
+void MotionMessage::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     if (_has_bit(0)) {
       if (host_ != &_default_host_) {
@@ -216,7 +216,7 @@ void MotionCommand::Clear() {
   mutable_unknown_fields()->Clear();
 }
 
-bool MotionCommand::MergePartialFromCodedStream(
+bool MotionMessage::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!(EXPRESSION)) return false
   ::google::protobuf::uint32 tag;
@@ -360,7 +360,7 @@ bool MotionCommand::MergePartialFromCodedStream(
 #undef DO_
 }
 
-void MotionCommand::SerializeWithCachedSizes(
+void MotionMessage::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // required string host = 1 [default = "localhost"];
   if (_has_bit(0)) {
@@ -424,7 +424,7 @@ void MotionCommand::SerializeWithCachedSizes(
   }
 }
 
-::google::protobuf::uint8* MotionCommand::SerializeWithCachedSizesToArray(
+::google::protobuf::uint8* MotionMessage::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
   // required string host = 1 [default = "localhost"];
   if (_has_bit(0)) {
@@ -494,7 +494,7 @@ void MotionCommand::SerializeWithCachedSizes(
   return target;
 }
 
-int MotionCommand::ByteSize() const {
+int MotionMessage::ByteSize() const {
   int total_size = 0;
   
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
@@ -559,10 +559,10 @@ int MotionCommand::ByteSize() const {
   return total_size;
 }
 
-void MotionCommand::MergeFrom(const ::google::protobuf::Message& from) {
+void MotionMessage::MergeFrom(const ::google::protobuf::Message& from) {
   GOOGLE_CHECK_NE(&from, this);
-  const MotionCommand* source =
-    ::google::protobuf::internal::dynamic_cast_if_available<const MotionCommand*>(
+  const MotionMessage* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const MotionMessage*>(
       &from);
   if (source == NULL) {
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
@@ -571,7 +571,7 @@ void MotionCommand::MergeFrom(const ::google::protobuf::Message& from) {
   }
 }
 
-void MotionCommand::MergeFrom(const MotionCommand& from) {
+void MotionMessage::MergeFrom(const MotionMessage& from) {
   GOOGLE_CHECK_NE(&from, this);
   parameter_.MergeFrom(from.parameter_);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
@@ -597,25 +597,25 @@ void MotionCommand::MergeFrom(const MotionCommand& from) {
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
 
-void MotionCommand::CopyFrom(const ::google::protobuf::Message& from) {
+void MotionMessage::CopyFrom(const ::google::protobuf::Message& from) {
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-void MotionCommand::CopyFrom(const MotionCommand& from) {
+void MotionMessage::CopyFrom(const MotionMessage& from) {
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool MotionCommand::IsInitialized() const {
+bool MotionMessage::IsInitialized() const {
   if ((_has_bits_[0] & 0x0000003f) != 0x0000003f) return false;
   
   return true;
 }
 
-void MotionCommand::Swap(MotionCommand* other) {
+void MotionMessage::Swap(MotionMessage* other) {
   if (other != this) {
     std::swap(host_, other->host_);
     std::swap(publisher_, other->publisher_);
@@ -630,11 +630,11 @@ void MotionCommand::Swap(MotionCommand* other) {
   }
 }
 
-::google::protobuf::Metadata MotionCommand::GetMetadata() const {
+::google::protobuf::Metadata MotionMessage::GetMetadata() const {
   protobuf_AssignDescriptorsOnce();
   ::google::protobuf::Metadata metadata;
-  metadata.descriptor = MotionCommand_descriptor_;
-  metadata.reflection = MotionCommand_reflection_;
+  metadata.descriptor = MotionMessage_descriptor_;
+  metadata.reflection = MotionMessage_reflection_;
   return metadata;
 }
 

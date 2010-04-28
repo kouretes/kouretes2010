@@ -85,7 +85,6 @@ int main(int argc, char *argv[]) {
 		mc = new MotionController(broker);
         testV = new Vision(broker,mq);
 		bc = new BehaviorController(broker,mq);
-		//
 		SleepMs(1000);
 
 	} catch (AL::ALError &e) {
@@ -101,7 +100,6 @@ int main(int argc, char *argv[]) {
 
 	//	sc = new SensorController(mq);
 	//	lc= new LocController(mq);
-
 		//sc->start();
 		//lc->start();
         mc->start();
@@ -116,7 +114,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	testV->join();
-	mc->join();
+    mc->join();
 	bc->join();
 	cout << "EXITING TEST" << endl;
 	exit(0);

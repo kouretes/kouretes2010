@@ -30,18 +30,18 @@ void  protobuf_AddDesc_motion_2eproto();
 void protobuf_AssignDesc_motion_2eproto();
 void protobuf_ShutdownFile_motion_2eproto();
 
-class MotionCommand;
+class MotionMessage;
 
 // ===================================================================
 
-class MotionCommand : public ::google::protobuf::Message {
+class MotionMessage : public ::google::protobuf::Message {
  public:
-  MotionCommand();
-  virtual ~MotionCommand();
+  MotionMessage();
+  virtual ~MotionMessage();
   
-  MotionCommand(const MotionCommand& from);
+  MotionMessage(const MotionMessage& from);
   
-  inline MotionCommand& operator=(const MotionCommand& from) {
+  inline MotionMessage& operator=(const MotionMessage& from) {
     CopyFrom(from);
     return *this;
   }
@@ -55,17 +55,17 @@ class MotionCommand : public ::google::protobuf::Message {
   }
   
   static const ::google::protobuf::Descriptor* descriptor();
-  static const MotionCommand& default_instance();
+  static const MotionMessage& default_instance();
   
-  void Swap(MotionCommand* other);
+  void Swap(MotionMessage* other);
   
   // implements Message ----------------------------------------------
   
-  MotionCommand* New() const;
+  MotionMessage* New() const;
   void CopyFrom(const ::google::protobuf::Message& from);
   void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const MotionCommand& from);
-  void MergeFrom(const MotionCommand& from);
+  void CopyFrom(const MotionMessage& from);
+  void MergeFrom(const MotionMessage& from);
   void Clear();
   bool IsInitialized() const;
   
@@ -157,7 +157,7 @@ class MotionCommand : public ::google::protobuf::Message {
   inline ::google::protobuf::RepeatedField< float >*
       mutable_parameter();
   
-  // @@protoc_insertion_point(class_scope:MotionCommand)
+  // @@protoc_insertion_point(class_scope:MotionMessage)
  private:
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
   mutable int _cached_size_;
@@ -192,50 +192,50 @@ class MotionCommand : public ::google::protobuf::Message {
   }
   
   void InitAsDefaultInstance();
-  static MotionCommand* default_instance_;
+  static MotionMessage* default_instance_;
 };
 // ===================================================================
 
 
 // ===================================================================
 
-// MotionCommand
+// MotionMessage
 
 // required string host = 1 [default = "localhost"];
-inline bool MotionCommand::has_host() const {
+inline bool MotionMessage::has_host() const {
   return _has_bit(0);
 }
-inline void MotionCommand::clear_host() {
+inline void MotionMessage::clear_host() {
   if (host_ != &_default_host_) {
     host_->assign(_default_host_);
   }
   _clear_bit(0);
 }
-inline const ::std::string& MotionCommand::host() const {
+inline const ::std::string& MotionMessage::host() const {
   return *host_;
 }
-inline void MotionCommand::set_host(const ::std::string& value) {
+inline void MotionMessage::set_host(const ::std::string& value) {
   _set_bit(0);
   if (host_ == &_default_host_) {
     host_ = new ::std::string;
   }
   host_->assign(value);
 }
-inline void MotionCommand::set_host(const char* value) {
+inline void MotionMessage::set_host(const char* value) {
   _set_bit(0);
   if (host_ == &_default_host_) {
     host_ = new ::std::string;
   }
   host_->assign(value);
 }
-inline void MotionCommand::set_host(const char* value, size_t size) {
+inline void MotionMessage::set_host(const char* value, size_t size) {
   _set_bit(0);
   if (host_ == &_default_host_) {
     host_ = new ::std::string;
   }
   host_->assign(reinterpret_cast<const char*>(value), size);
 }
-inline ::std::string* MotionCommand::mutable_host() {
+inline ::std::string* MotionMessage::mutable_host() {
   _set_bit(0);
   if (host_ == &_default_host_) {
     host_ = new ::std::string(_default_host_);
@@ -244,40 +244,40 @@ inline ::std::string* MotionCommand::mutable_host() {
 }
 
 // required string publisher = 2 [default = ""];
-inline bool MotionCommand::has_publisher() const {
+inline bool MotionMessage::has_publisher() const {
   return _has_bit(1);
 }
-inline void MotionCommand::clear_publisher() {
+inline void MotionMessage::clear_publisher() {
   if (publisher_ != &_default_publisher_) {
     publisher_->clear();
   }
   _clear_bit(1);
 }
-inline const ::std::string& MotionCommand::publisher() const {
+inline const ::std::string& MotionMessage::publisher() const {
   return *publisher_;
 }
-inline void MotionCommand::set_publisher(const ::std::string& value) {
+inline void MotionMessage::set_publisher(const ::std::string& value) {
   _set_bit(1);
   if (publisher_ == &_default_publisher_) {
     publisher_ = new ::std::string;
   }
   publisher_->assign(value);
 }
-inline void MotionCommand::set_publisher(const char* value) {
+inline void MotionMessage::set_publisher(const char* value) {
   _set_bit(1);
   if (publisher_ == &_default_publisher_) {
     publisher_ = new ::std::string;
   }
   publisher_->assign(value);
 }
-inline void MotionCommand::set_publisher(const char* value, size_t size) {
+inline void MotionMessage::set_publisher(const char* value, size_t size) {
   _set_bit(1);
   if (publisher_ == &_default_publisher_) {
     publisher_ = new ::std::string;
   }
   publisher_->assign(reinterpret_cast<const char*>(value), size);
 }
-inline ::std::string* MotionCommand::mutable_publisher() {
+inline ::std::string* MotionMessage::mutable_publisher() {
   _set_bit(1);
   if (publisher_ == &_default_publisher_) {
     publisher_ = new ::std::string;
@@ -286,40 +286,40 @@ inline ::std::string* MotionCommand::mutable_publisher() {
 }
 
 // required string topic = 3 [default = "global"];
-inline bool MotionCommand::has_topic() const {
+inline bool MotionMessage::has_topic() const {
   return _has_bit(2);
 }
-inline void MotionCommand::clear_topic() {
+inline void MotionMessage::clear_topic() {
   if (topic_ != &_default_topic_) {
     topic_->assign(_default_topic_);
   }
   _clear_bit(2);
 }
-inline const ::std::string& MotionCommand::topic() const {
+inline const ::std::string& MotionMessage::topic() const {
   return *topic_;
 }
-inline void MotionCommand::set_topic(const ::std::string& value) {
+inline void MotionMessage::set_topic(const ::std::string& value) {
   _set_bit(2);
   if (topic_ == &_default_topic_) {
     topic_ = new ::std::string;
   }
   topic_->assign(value);
 }
-inline void MotionCommand::set_topic(const char* value) {
+inline void MotionMessage::set_topic(const char* value) {
   _set_bit(2);
   if (topic_ == &_default_topic_) {
     topic_ = new ::std::string;
   }
   topic_->assign(value);
 }
-inline void MotionCommand::set_topic(const char* value, size_t size) {
+inline void MotionMessage::set_topic(const char* value, size_t size) {
   _set_bit(2);
   if (topic_ == &_default_topic_) {
     topic_ = new ::std::string;
   }
   topic_->assign(reinterpret_cast<const char*>(value), size);
 }
-inline ::std::string* MotionCommand::mutable_topic() {
+inline ::std::string* MotionMessage::mutable_topic() {
   _set_bit(2);
   if (topic_ == &_default_topic_) {
     topic_ = new ::std::string(_default_topic_);
@@ -328,56 +328,56 @@ inline ::std::string* MotionCommand::mutable_topic() {
 }
 
 // required int32 timeout = 4 [default = 0];
-inline bool MotionCommand::has_timeout() const {
+inline bool MotionMessage::has_timeout() const {
   return _has_bit(3);
 }
-inline void MotionCommand::clear_timeout() {
+inline void MotionMessage::clear_timeout() {
   timeout_ = 0;
   _clear_bit(3);
 }
-inline ::google::protobuf::int32 MotionCommand::timeout() const {
+inline ::google::protobuf::int32 MotionMessage::timeout() const {
   return timeout_;
 }
-inline void MotionCommand::set_timeout(::google::protobuf::int32 value) {
+inline void MotionMessage::set_timeout(::google::protobuf::int32 value) {
   _set_bit(3);
   timeout_ = value;
 }
 
 // required string timestamp = 5 [default = ""];
-inline bool MotionCommand::has_timestamp() const {
+inline bool MotionMessage::has_timestamp() const {
   return _has_bit(4);
 }
-inline void MotionCommand::clear_timestamp() {
+inline void MotionMessage::clear_timestamp() {
   if (timestamp_ != &_default_timestamp_) {
     timestamp_->clear();
   }
   _clear_bit(4);
 }
-inline const ::std::string& MotionCommand::timestamp() const {
+inline const ::std::string& MotionMessage::timestamp() const {
   return *timestamp_;
 }
-inline void MotionCommand::set_timestamp(const ::std::string& value) {
+inline void MotionMessage::set_timestamp(const ::std::string& value) {
   _set_bit(4);
   if (timestamp_ == &_default_timestamp_) {
     timestamp_ = new ::std::string;
   }
   timestamp_->assign(value);
 }
-inline void MotionCommand::set_timestamp(const char* value) {
+inline void MotionMessage::set_timestamp(const char* value) {
   _set_bit(4);
   if (timestamp_ == &_default_timestamp_) {
     timestamp_ = new ::std::string;
   }
   timestamp_->assign(value);
 }
-inline void MotionCommand::set_timestamp(const char* value, size_t size) {
+inline void MotionMessage::set_timestamp(const char* value, size_t size) {
   _set_bit(4);
   if (timestamp_ == &_default_timestamp_) {
     timestamp_ = new ::std::string;
   }
   timestamp_->assign(reinterpret_cast<const char*>(value), size);
 }
-inline ::std::string* MotionCommand::mutable_timestamp() {
+inline ::std::string* MotionMessage::mutable_timestamp() {
   _set_bit(4);
   if (timestamp_ == &_default_timestamp_) {
     timestamp_ = new ::std::string;
@@ -386,40 +386,40 @@ inline ::std::string* MotionCommand::mutable_timestamp() {
 }
 
 // required string command = 6 [default = ""];
-inline bool MotionCommand::has_command() const {
+inline bool MotionMessage::has_command() const {
   return _has_bit(5);
 }
-inline void MotionCommand::clear_command() {
+inline void MotionMessage::clear_command() {
   if (command_ != &_default_command_) {
     command_->clear();
   }
   _clear_bit(5);
 }
-inline const ::std::string& MotionCommand::command() const {
+inline const ::std::string& MotionMessage::command() const {
   return *command_;
 }
-inline void MotionCommand::set_command(const ::std::string& value) {
+inline void MotionMessage::set_command(const ::std::string& value) {
   _set_bit(5);
   if (command_ == &_default_command_) {
     command_ = new ::std::string;
   }
   command_->assign(value);
 }
-inline void MotionCommand::set_command(const char* value) {
+inline void MotionMessage::set_command(const char* value) {
   _set_bit(5);
   if (command_ == &_default_command_) {
     command_ = new ::std::string;
   }
   command_->assign(value);
 }
-inline void MotionCommand::set_command(const char* value, size_t size) {
+inline void MotionMessage::set_command(const char* value, size_t size) {
   _set_bit(5);
   if (command_ == &_default_command_) {
     command_ = new ::std::string;
   }
   command_->assign(reinterpret_cast<const char*>(value), size);
 }
-inline ::std::string* MotionCommand::mutable_command() {
+inline ::std::string* MotionMessage::mutable_command() {
   _set_bit(5);
   if (command_ == &_default_command_) {
     command_ = new ::std::string;
@@ -428,27 +428,27 @@ inline ::std::string* MotionCommand::mutable_command() {
 }
 
 // repeated float parameter = 7;
-inline int MotionCommand::parameter_size() const {
+inline int MotionMessage::parameter_size() const {
   return parameter_.size();
 }
-inline void MotionCommand::clear_parameter() {
+inline void MotionMessage::clear_parameter() {
   parameter_.Clear();
 }
-inline float MotionCommand::parameter(int index) const {
+inline float MotionMessage::parameter(int index) const {
   return parameter_.Get(index);
 }
-inline void MotionCommand::set_parameter(int index, float value) {
+inline void MotionMessage::set_parameter(int index, float value) {
   parameter_.Set(index, value);
 }
-inline void MotionCommand::add_parameter(float value) {
+inline void MotionMessage::add_parameter(float value) {
   parameter_.Add(value);
 }
 inline const ::google::protobuf::RepeatedField< float >&
-MotionCommand::parameter() const {
+MotionMessage::parameter() const {
   return parameter_;
 }
 inline ::google::protobuf::RepeatedField< float >*
-MotionCommand::mutable_parameter() {
+MotionMessage::mutable_parameter() {
   return &parameter_;
 }
 
