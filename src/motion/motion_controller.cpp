@@ -1,7 +1,5 @@
 #include "motion_controller.h"
 
-
-
 void MotionController::run() {
 	//std::cout << " MotionController START" << std::endl;
 	commands();
@@ -11,52 +9,16 @@ void MotionController::run() {
 }
 
 
-
-void MotionController::commands(){
-
-/*
-	if (walkPID == 0) {
-		cout << "Sending walk command!" << std::endl;
-		sleep(2);
-		// counter = 0;
-		float x = rand() / ((float) RAND_MAX);
-		float y = rand() / ((float) RAND_MAX);
-		float t = rand() / ((float) RAND_MAX);
-		memory->insertData("kouretes/WalkCommand", AL::ALValue("walkTo"));
-		memory->insertData("kouretes/WalkParam1",(float) x);
-		memory->insertData("kouretes/WalkParam2",(float) y);
-		memory->insertData("kouretes/WalkParam3",(float) t);
+void MotionController::process_messages()
+{
+	if(sub_buffer->size() > 0) {
+		mm = (MotionMessage*) sub_buffer->remove_head();
+		cout << "I received a message from " << mm->publisher() << endl;
 	}
-*/
-	memory->insertData("kouretes/WalkCommand", AL::ALValue(""));
-
-/*
-	if ( (headPID == 0) && ( counter % 10 == 0 ) ) {
-		cout << "Sending set head command!" << std::endl;
-		float x = rand() / ((float) RAND_MAX);
-		x = x - 0.5;
-		float y = rand() / ((float) RAND_MAX);
-		y = y - 0.5;
-		memory->insertData("kouretes/HeadCommand", AL::ALValue("setHead"));
-		memory->insertData("kouretes/HeadParam1",(float) x);  // Head Yaw
-		memory->insertData("kouretes/HeadParam2",(float) y);  // Head Pitch
-	}
-*/
-	if ( (headPID == 0) && ( counter % 10 == 0 ) ) {
-		cout << "Sending change head command!" << std::endl;
-		float x = rand() / ((float) RAND_MAX);
-		x = (x - 0.5)*0.5;
-		float y = rand() / ((float) RAND_MAX);
-		y = (y - 0.5)*0.5;
-		memory->insertData("kouretes/HeadCommand", AL::ALValue("changeHead"));
-		memory->insertData("kouretes/HeadParam1",(float) x);  // change in Head Yaw
-		memory->insertData("kouretes/HeadParam2",(float) y);  // change in Head Pitch
-	}
-	
-	return;
+	else 
+		mm = NULL;
+	boost::thread::yield();
 }
-
-
 
 
 void MotionController::mglrun(){
@@ -120,45 +82,45 @@ void MotionController::mglrun(){
 		if ( (walkPID!=0) && !motion->isRunning(walkPID) && !motion->walkIsActive() ) {
 			walkPID = 0;
 			std::cout << "   Walk command completed! Motion engine executed " << counter << " times. " << std::endl;
-			memory->insertData("kouretes/WalkCommand", AL::ALValue("DONE"));
 		}
-
-		/* Check if there is a Walk command to execute */
-		walkCommand = (std::string) memory->getData("kouretes/WalkCommand");		
-		if (walkCommand == "walkTo") {
-			walkParam1 = memory->getData("kouretes/WalkParam1");
-			walkParam2 = memory->getData("kouretes/WalkParam2");
-			walkParam3 = memory->getData("kouretes/WalkParam3");
-			std::cout << walkCommand << " with parameters " << walkParam1 << " " << walkParam2 << " " << walkParam3 << std::endl;
-			walkPID = motion->post.walkTo(walkParam1, walkParam2, walkParam3);
-			std::cout << "   Walk ID: " << walkPID << std::endl;
-			memory->insertData("kouretes/WalkCommand", AL::ALValue("RUNNING"));
-		}
-		else if (walkCommand == "setWalkTargetVelocity") { 
-			walkParam1 = memory->getData("kouretes/WalkParam1");
-			walkParam2 = memory->getData("kouretes/WalkParam2");
-			walkParam3 = memory->getData("kouretes/WalkParam3");
-			walkParam4 = memory->getData("kouretes/WalkParam4");
-			std::cout << walkCommand << " with parameters " << walkParam1 << " " << walkParam2 << " " << walkParam3 << " " << walkParam4 << std::endl;
-			walkPID = motion->post.setWalkTargetVelocity(walkParam1, walkParam2, walkParam3, walkParam4);
-			std::cout << "   Walk ID: " << walkPID << std::endl;
-			memory->insertData("kouretes/WalkCommand", AL::ALValue("RUNNING"));
-		}
-		
 		
 		/* Check if a Head command has been completed */
 		if ( (headPID!=0) && !motion->isRunning(headPID) ) {
 			headPID = 0;
 			std::cout << "   Head command completed! Motion engine executed " << counter << " times. " << std::endl;
-			memory->insertData("kouretes/HeadCommand", AL::ALValue("DONE"));
-		}
+		}	
+		
+		/* Check if an Action command has been completed */
+		if ( (actionPID!=0) && !motion->isRunning(actionPID) ) {
+			actionPID = 0;
+			std::cout << "   Action command completed! Motion engine executed " << counter << " times. " << std::endl;
+		}			
 
-		/* Check if there is a Head command to execute */
-		headCommand = (std::string) memory->getData("kouretes/HeadCommand");		
-		if (headCommand == "setHead") {
-			headParam1 = memory->getData("kouretes/HeadParam1");
-			headParam2 = memory->getData("kouretes/HeadParam2");
-			std::cout << headCommand << " with parameters " << headParam1 << " " << headParam2 << std::endl;
+		/* Check if there is a command to execute */		
+		process_messages();
+		if (mm == NULL) return;
+		
+		if (mm->command() == "walkTo") {
+			walkParam1 = mm->parameter(0);
+			walkParam2 = mm->parameter(1);
+			walkParam3 = mm->parameter(2);
+			std::cout << mm->command() << " with parameters " << walkParam1 << " " << walkParam2 << " " << walkParam3 << std::endl;
+			walkPID = motion->post.walkTo(walkParam1, walkParam2, walkParam3);
+			std::cout << "   Walk ID: " << walkPID << std::endl;
+		}
+		else if (mm->command() == "setWalkTargetVelocity") { 
+			walkParam1 = mm->parameter(0);
+			walkParam2 = mm->parameter(1);
+			walkParam3 = mm->parameter(2);
+			walkParam3 = mm->parameter(3);
+			std::cout << mm->command() << " with parameters " << walkParam1 << " " << walkParam2 << " " << walkParam3 << " " << walkParam4 << std::endl;
+			walkPID = motion->post.setWalkTargetVelocity(walkParam1, walkParam2, walkParam3, walkParam4);
+			std::cout << "   Walk ID: " << walkPID << std::endl;
+		}
+		else if (mm->command() == "setHead") {
+			headParam1 = mm->parameter(0);
+			headParam2 = mm->parameter(1);
+			std::cout << mm->command() << " with parameters " << headParam1 << " " << headParam2 << std::endl;
 			names.arraySetSize(2);
 			values.arraySetSize(2);
 			names[0] = "HeadYaw";
@@ -168,12 +130,11 @@ void MotionController::mglrun(){
 			float fractionMaxSpeed  = 0.2;
 			headPID = motion->post.setAngles(names, values, fractionMaxSpeed);
 			std::cout << "   Head ID: " << headPID << std::endl;
-			memory->insertData("kouretes/HeadCommand", AL::ALValue("RUNNING"));
 		}
-		else if (headCommand == "changeHead") {
-			headParam1 = memory->getData("kouretes/HeadParam1");
-			headParam2 = memory->getData("kouretes/HeadParam2");
-			std::cout << headCommand << " with parameters " << headParam1 << " " << headParam2 << std::endl;
+		else if (mm->command() == "changeHead") {
+			headParam1 = mm->parameter(0);
+			headParam2 = mm->parameter(1);
+			std::cout << mm->command() << " with parameters " << headParam1 << " " << headParam2 << std::endl;
 			names.arraySetSize(2);
 			values.arraySetSize(2);
 			names[0] = "HeadYaw";
@@ -183,7 +144,6 @@ void MotionController::mglrun(){
 			float fractionMaxSpeed  = 0.2;
 			headPID = motion->post.changeAngles(names, values, fractionMaxSpeed);
 			std::cout << "   Head ID: " << headPID << std::endl;
-			memory->insertData("kouretes/HeadCommand", AL::ALValue("RUNNING"));
 		}
 
 	}
@@ -220,6 +180,64 @@ void MotionController::mglrun(){
 
 
 
+
+void MotionController::commands(){
+
+
+	if ( (headPID == 0) && ( counter % 10 == 0 ) ) {
+		MotionMessage* mot = new MotionMessage();
+		float x = rand() / ((float) RAND_MAX);
+		x = (x - 0.5)*0.5;
+		float y = rand() / ((float) RAND_MAX);
+		y = (y - 0.5)*0.5;
+		mot->set_topic("motion");
+		mot->set_command("changeHead");
+		mot->add_parameter(x);
+		mot->add_parameter(y);
+		Publisher::publish(mot);
+	}
+
+/*
+	if (walkPID == 0) {
+		cout << "Sending walk command!" << std::endl;
+		sleep(2);
+		// counter = 0;
+		float x = rand() / ((float) RAND_MAX);
+		float y = rand() / ((float) RAND_MAX);
+		float t = rand() / ((float) RAND_MAX);
+		memory->insertData("kouretes/WalkCommand", AL::ALValue("walkTo"));
+		memory->insertData("kouretes/WalkParam1",(float) x);
+		memory->insertData("kouretes/WalkParam2",(float) y);
+		memory->insertData("kouretes/WalkParam3",(float) t);
+	}
+*/
+//	memory->insertData("kouretes/WalkCommand", AL::ALValue(""));
+
+/*
+	if ( (headPID == 0) && ( counter % 10 == 0 ) ) {
+		cout << "Sending set head command!" << std::endl;
+		float x = rand() / ((float) RAND_MAX);
+		x = x - 0.5;
+		float y = rand() / ((float) RAND_MAX);
+		y = y - 0.5;
+		memory->insertData("kouretes/HeadCommand", AL::ALValue("setHead"));
+		memory->insertData("kouretes/HeadParam1",(float) x);  // Head Yaw
+		memory->insertData("kouretes/HeadParam2",(float) y);  // Head Pitch
+	}
+
+	if ( (headPID == 0) && ( counter % 10 == 0 ) ) {
+		cout << "Sending change head command!" << std::endl;
+		float x = rand() / ((float) RAND_MAX);
+		x = (x - 0.5)*0.5;
+		float y = rand() / ((float) RAND_MAX);
+		y = (y - 0.5)*0.5;
+		memory->insertData("kouretes/HeadCommand", AL::ALValue("changeHead"));
+		memory->insertData("kouretes/HeadParam1",(float) x);  // change in Head Yaw
+		memory->insertData("kouretes/HeadParam2",(float) y);  // change in Head Pitch
+	}
+*/
+	return;
+}
 
 
 

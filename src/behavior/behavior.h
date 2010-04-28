@@ -27,7 +27,7 @@ class BehaviorController: public Thread, public Publisher, public Subscriber {
 		AL::ALPtr<AL::ALMotionProxy> motion;
 		AL::ALPtr<AL::ALMemoryProxy> memory;
 
-		MotionCommand* mot;
+		MotionMessage* mot;
 };
 
 #endif  

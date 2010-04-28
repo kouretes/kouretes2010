@@ -81,9 +81,9 @@ int main(int argc, char *argv[]) {
 		memory = broker->getMemoryProxy();
 
 		SleepMs(1000);
-		testV = new Vision(broker);
-		mc = new MotionController(broker);
-		testV->start();
+		//testV = new Vision(broker);
+		mc = new MotionController(broker, mq);
+		//testV->start();
 		mc->start();
 		SleepMs(1000);
 
@@ -100,14 +100,14 @@ int main(int argc, char *argv[]) {
 
 	//	sc = new SensorController(mq);
 	//	lc= new LocController(mq);
-		bc = new BehaviorController(broker,mq);
+	//	bc = new BehaviorController(broker,mq);
 	//	sc->start();
 	//	lc->start();
-		bc->start();
+	//	bc->start();
 	//	lc->join();
 	//	bc->join();
 	//	sc->join();
-	testV->join();
+	//testV->join();
 	mc->join();
 	cout << "EXITING TEST" << endl;
 	exit(0);
