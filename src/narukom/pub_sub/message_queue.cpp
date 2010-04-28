@@ -325,8 +325,9 @@ void MessageQueue::run()
 cout << "Starting Thread Main" << endl;
 running = true;
 while(running)
-  process_queued_msg();
-boost::thread::yield();
+{  process_queued_msg();
+	boost::thread::yield();
+}
 cout << "Ending Thread Main " << endl;
 
 }
