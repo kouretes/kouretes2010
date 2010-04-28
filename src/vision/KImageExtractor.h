@@ -41,9 +41,10 @@
           doneSubscribe=false;
           try {
             c = pbroker->getProxy( "ALVideoDevice" );
-
+            c->callVoid( "unsubscribe", GVM_name );
             GVM_name = c->call<std::string>( "subscribe", GVM_name, resolution,
                   cSpace,VISON_FPS );
+
           doneSubscribe=true;
 
           } catch (AL::ALError& e) {

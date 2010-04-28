@@ -43,7 +43,7 @@ void MotionController::commands(){
 	}
 */
 	if ( (headPID == 0) && ( counter % 10 == 0 ) ) {
-		cout << "Sending change head command!" << std::endl;
+        cout << "Sending change head command!" << std::endl;
 		float x = rand() / ((float) RAND_MAX);
 		x = (x - 0.5)*0.5;
 		float y = rand() / ((float) RAND_MAX);
@@ -52,7 +52,7 @@ void MotionController::commands(){
 		memory->insertData("kouretes/HeadParam1",(float) x);  // change in Head Yaw
 		memory->insertData("kouretes/HeadParam2",(float) y);  // change in Head Pitch
 	}
-	
+
 	return;
 }
 
@@ -75,10 +75,10 @@ void MotionController::mglrun(){
 #endif
 		cout << "Robot falling: Stiffness off" << std::endl;
 		motion->setStiffnesses("Body", 0.0);
-		robotUp = false; 
+		robotUp = false;
 		robotDown = true;
 		motion->post.killWalk();
-		walkPID = 0; 
+		walkPID = 0;
 		if (headPID != 0) {
 			motion->post.killTask(headPID);
 			headPID = 0;
@@ -86,20 +86,20 @@ void MotionController::mglrun(){
 		sleep(1);
 		return;
 	}
-	
+
 
 	/* Check if the robot is down and stand up */
 	if (robotDown) {
-		cout << "Will stand up now ... " << std::endl; 
+		cout << "Will stand up now ... " << std::endl;
 		motion->setStiffnesses("Body", 1.0);
 		ALstandUp();
 		robotDown = false;
 		return;
 	}
-	
-	
+
+
 	/* Check if the robot stood up after a stand up procedure */
-	if (!robotUp && !robotDown) { 
+	if (!robotUp && !robotDown) {
 #ifdef WEBOTS
 		if (AccZvalue > 8.5) { // Webots
 #else
@@ -115,7 +115,7 @@ void MotionController::mglrun(){
 
 	/* The robot is up and ready to execute motions */
 	if ( robotUp ) {
-	
+
 		/* Check if a Walk command has been completed */
 		if ( (walkPID!=0) && !motion->isRunning(walkPID) && !motion->walkIsActive() ) {
 			walkPID = 0;
@@ -124,7 +124,7 @@ void MotionController::mglrun(){
 		}
 
 		/* Check if there is a Walk command to execute */
-		walkCommand = (std::string) memory->getData("kouretes/WalkCommand");		
+		walkCommand = (std::string) memory->getData("kouretes/WalkCommand");
 		if (walkCommand == "walkTo") {
 			walkParam1 = memory->getData("kouretes/WalkParam1");
 			walkParam2 = memory->getData("kouretes/WalkParam2");
@@ -134,7 +134,7 @@ void MotionController::mglrun(){
 			std::cout << "   Walk ID: " << walkPID << std::endl;
 			memory->insertData("kouretes/WalkCommand", AL::ALValue("RUNNING"));
 		}
-		else if (walkCommand == "setWalkTargetVelocity") { 
+		else if (walkCommand == "setWalkTargetVelocity") {
 			walkParam1 = memory->getData("kouretes/WalkParam1");
 			walkParam2 = memory->getData("kouretes/WalkParam2");
 			walkParam3 = memory->getData("kouretes/WalkParam3");
@@ -144,8 +144,8 @@ void MotionController::mglrun(){
 			std::cout << "   Walk ID: " << walkPID << std::endl;
 			memory->insertData("kouretes/WalkCommand", AL::ALValue("RUNNING"));
 		}
-		
-		
+
+
 		/* Check if a Head command has been completed */
 		if ( (headPID!=0) && !motion->isRunning(headPID) ) {
 			headPID = 0;
@@ -154,7 +154,7 @@ void MotionController::mglrun(){
 		}
 
 		/* Check if there is a Head command to execute */
-		headCommand = (std::string) memory->getData("kouretes/HeadCommand");		
+		headCommand = (std::string) memory->getData("kouretes/HeadCommand");
 		if (headCommand == "setHead") {
 			headParam1 = memory->getData("kouretes/HeadParam1");
 			headParam2 = memory->getData("kouretes/HeadParam2");
@@ -1488,7 +1488,7 @@ void MotionController::ALstandUp2010(){
 
 	float AccXvalue = memory->getData("Device/SubDeviceList/InertialSensor/AccX/Sensor/Value");
 	cout << "AccXvalue " << AccXvalue << std::endl;
-        
+
 #ifdef WEBOTS
 	if (AccXvalue > 1.0) { // Webots
 #else

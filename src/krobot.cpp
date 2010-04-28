@@ -64,31 +64,32 @@ int main(int argc, char *argv[]) {
 
 	std::cout << "Try to connect to parent Broker at ip :" << parentBrokerIP << " and port : " << parentBrokerPort << std::endl;
 	std::cout << "Start the server bind on this ip :  " << brokerIP << " and port : " << brokerPort << std::endl;
-	Narukom* n = new Narukom();
-	MotionController* mc;
+	std::cout<<"Starting Narukom:"<<endl;
+	//Narukom* n = new Narukom();
+	//MotionController* mc;
 	//SensorController* sc;
-	BehaviorController* bc;
-	LocController* lc;
-	Vision* testV;
-	MessageQueue *mq = n->get_message_queue();
+	//BehaviorController* bc;
+	//LocController* lc;
+	//Vision* testV;
+	//MessageQueue *mq = n->get_message_queue();
 
 	AL::ALBroker::Ptr broker;
 
 	AL::ALPtr<AL::ALMemoryProxy> memory;
 	try {
-
+        std::cout<<"Creating ALBroker"<<endl;
 		broker = AL::ALBroker::createBroker(brokerName, brokerIP, brokerPort, parentBrokerIP, parentBrokerPort);
 		memory = broker->getMemoryProxy();
 
 		SleepMs(1000);
-		testV = new Vision(broker);
-		mc = new MotionController(broker);
-		testV->start();
-		mc->start();
+		//mc = new MotionController(broker);
+        //testV = new Vision(broker,mq);
+		//bc = new BehaviorController(broker,mq);
+		//
 		SleepMs(1000);
 
 	} catch (AL::ALError &e) {
-		delete n;
+		//delete n;
 		std::cout << "-----------------------------------------------------" << std::endl;
 		std::cout << "Creation of broker failed. Application will exit now." << std::endl;
 		std::cout << "-----------------------------------------------------" << std::endl;
@@ -100,15 +101,22 @@ int main(int argc, char *argv[]) {
 
 	//	sc = new SensorController(mq);
 	//	lc= new LocController(mq);
-		bc = new BehaviorController(broker,mq);
+
 	//	sc->start();
 	//	lc->start();
-		bc->start();
+        //mc->start();
+        //testV->start();
+		//bc->start();
+
 	//	lc->join();
 	//	bc->join();
 	//	sc->join();
-	testV->join();
-	mc->join();
+	while (1) {
+		SleepMs(100);
+	}
+
+	//testV->join();
+	//mc->join();
 	cout << "EXITING TEST" << endl;
 	exit(0);
 # ifndef _WIN32
@@ -121,9 +129,6 @@ int main(int argc, char *argv[]) {
 	sigaction(SIGINT, &new_action, NULL);
 # endif
 
-	while (1) {
-		SleepMs(100);
-	}
 
 # ifdef _WIN32
 	_terminationHandler( 0 );
