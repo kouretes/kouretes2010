@@ -82,10 +82,12 @@ int main(int argc, char *argv[]) {
 		memory = broker->getMemoryProxy();
 
 		SleepMs(1000);
-		testV = new Vision(broker, mq,true);
-		mc = new MotionController(broker, mq);
 
+		mc = new MotionController(broker, mq);
 		bc = new BehaviorController(broker,mq);
+
+
+
 		SleepMs(1000);
 
 	} catch (AL::ALError &e) {
@@ -103,6 +105,7 @@ int main(int argc, char *argv[]) {
 	//sc->start();
 	//lc->start();
 	mc->start();
+    testV = new Vision(broker, mq);
 	testV->start();
 	bc->start();
 

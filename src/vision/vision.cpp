@@ -21,6 +21,7 @@ void Vision::testrun()
     cout << "ImageTimestamp:"<< t.tv_sec << " " << t.tv_nsec << endl;
 #endif
     //SleepMs(1000);
+    usleep(5000);
     gridScan(orange);
     if (cvHighgui)
         cvShowSegmented();
@@ -45,8 +46,8 @@ KSegmentator::colormask_t Vision::doSeg(int x, int y)
 
 }
 
-Vision::Vision(AL::ALPtr<AL::ALBroker> pbroker, MessageQueue *mq,bool gui) :
-       cvHighgui(gui),type(VISION_CSPACE), ext(pbroker)
+Vision::Vision(AL::ALPtr<AL::ALBroker> pbroker, MessageQueue *mq,bool gui) :Publisher("Vision"),
+       cvHighgui(gui), ext(pbroker,mq),type(VISION_CSPACE)
 {
     cout << "Vision():" ;//<< endl;
     rawImage = ext.allocateImage();
@@ -59,8 +60,13 @@ Vision::Vision(AL::ALPtr<AL::ALBroker> pbroker, MessageQueue *mq,bool gui) :
 
     ifstream *config = new ifstream("segmentation.conf");
     seg = new KSegmentator(*config);//TODO PATH!!!
+    cout<<"Add publisher"<<endl;
     if (mq!=NULL)
         mq->add_publisher(this);
+
+    cout<<"Start calibration"<<endl;
+    float scale= ext.calibrateCamera();
+    seg->setLumaScale(scale);
     cout<<"Done!"<<endl;
 
 
@@ -490,5 +496,5 @@ void Vision::cvShowSegmented()
      pos[0]=pos[0]+0.1;
      pos[1]=pos[1]+0.1;
      m->callVoid("setAngles",names,pos,0.8);*/
-    int k = cvWaitKey(250);
+    int k = cvWaitKey(4);
 }

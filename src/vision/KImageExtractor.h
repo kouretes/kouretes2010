@@ -14,12 +14,12 @@
 #include "alptr.h"
 #include <opencv/cv.h>
 #include <time.h>
-
+#include "pub_sub/publisher.h"
 
 
 #define VISION_RESOLUTION kQVGA
 #define VISION_CSPACE kYUV422InterlacedColorSpace
-#define VISON_FPS 10
+#define VISON_FPS 15
 #define VISION_GVMNAME "KImageExtractor"
 
 #define REMOTE_ON 1
@@ -32,17 +32,17 @@ using namespace std;
  * Automatically deals with naoqi related stuff, and handles gracefully image size changes
  * TODO: Provide functionality to change resolution/framerate on the fly
  */
-class KImageExtractor
+class KImageExtractor : public Publisher
 {
 	public:
-		KImageExtractor(AL::ALPtr<AL::ALBroker> pbroker );
+		KImageExtractor(AL::ALPtr<AL::ALBroker> pbroker, MessageQueue *mq);
 
 		~KImageExtractor();
 		//Get new Image from hardware
 		struct timespec fetchImage(IplImage *img);
 		//Create new space for image
 		IplImage *allocateImage();
-
+        float calibrateCamera(int sleeptime=2500,int exp=50);
 	private:
 		AL::ALPtr<AL::ALProxy> c;//Camera proxy to naoqi
 		//Name used when subscribing Generic Video Module
@@ -50,6 +50,7 @@ class KImageExtractor
 		int resolution;//Current Resolution
 		int cSpace;// Current Colorspace
 		bool doneSubscribe;//Initializations done?
+
 };
 
 

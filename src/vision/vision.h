@@ -30,7 +30,6 @@ public:
     */
     Vision(AL::ALPtr<AL::ALBroker> pbroker, MessageQueue *mq,bool gui=false) ;
     void testrun();
-    ~Vision();
     void run();
 
 
