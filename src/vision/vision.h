@@ -42,7 +42,8 @@ public:
 
         ifstream *config = new ifstream("segmentation.conf");
         seg = new KSegmentator(*config);//TODO PATH!!!
-        mq->add_publisher(this);
+        if(mq!=NULL)
+            mq->add_publisher(this);
         cout<<"Done!"<<endl;
 
 
