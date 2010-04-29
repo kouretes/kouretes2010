@@ -60,6 +60,7 @@ struct timespec KImageExtractor::fetchImage(IplImage *img)
           {
             cout<<"KImageExtractor::fetchImage():allocating new imagedata"<<endl;
             free(img->imageData);
+            img->imageData=NULL;
             cvInitImageHeader(img,  cvSize(width,height),IPL_DEPTH_8U, nChannels);
             img->imageData=NULL;
             //img->imageData=(char*)malloc(img->imageSize);

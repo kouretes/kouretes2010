@@ -6,44 +6,56 @@
 #include "system/Thread.h"
 //#include "albrokermanager.h"
 #include "alptr.h"
-#include "almemoryproxy.h"
+//#include "almemoryproxy.h"
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
 
 #include "KImageExtractor.h"
 #include "KSegmentator.h"
 
+#include "pub_sub/publisher.h"
+#include "messages/VisionObservations.pb.h"
 //#define DEBUGVISION
 
 
-class Vision : public Thread
+class Vision : public Thread, public Publisher
 {
 
 public:
-
-    Vision(AL::ALPtr<AL::ALBroker> pbroker,bool gui=false) :
-            ext(pbroker), type(VISION_CSPACE),cvHighgui(gui)
+    /**
+    * The only available constructor: I need:
+    * albroker: only to pass along to the KImageExtractor
+    * MessageQueue : a messageQueue to deliver messages to
+    * gui= enable debug gui? On the robot all cvhighigui calls should fail, so default is false
+    */
+    Vision(AL::ALPtr<AL::ALBroker> pbroker, MessageQueue *mq,bool gui=false) :
+            ext(pbroker),cvHighgui(gui),type(VISION_CSPACE)
     {
-        cout << "Vision()" << endl;
+        cout << "Vision():" ;//<< endl;
         rawImage = ext.allocateImage();
         if(cvHighgui)
         {
             segIpl = cvCreateImage(cvSize(rawImage->width, rawImage->height), IPL_DEPTH_8U, 3);
             cvNamedWindow("win1", CV_WINDOW_AUTOSIZE);
         }
-        memory = pbroker->getMemoryProxy();
+        //memory = pbroker->getMemoryProxy();
 
         ifstream *config = new ifstream("segmentation.conf");
         seg = new KSegmentator(*config);//TODO PATH!!!
+        mq->add_publisher(this);
+        cout<<"Done!"<<endl;
+
 
     }
     void testrun()
     {
 
-        cout << "fetchImage" << endl;
+        //cout << "fetchImage" << endl;
         struct timespec t = ext.fetchImage(rawImage);
-        cout << t.tv_sec << " " << t.tv_nsec << endl;
-        //SleepMs(250);
+#ifdef DEBUGVISION
+        cout << "ImageTimestamp:"<< t.tv_sec << " " << t.tv_nsec << endl;
+#endif
+        //SleepMs(1000);
         gridScan(orange);
         if(cvHighgui)
             cvShowSegmented();
@@ -58,13 +70,14 @@ public:
     }
     void run()
     {
-        std::cout << " Vision run" << std::endl;
+        //std::cout << " Vision run" << std::endl;
         testrun();
     }
 
 private:
     bool cvHighgui;
-    AL::ALPtr<AL::ALMemoryProxy> memory;
+    BallTrackMessage trckmsg;
+    //AL::ALPtr<AL::ALMemoryProxy> memory;
 
     //Ball Detection related
     typedef struct balldata

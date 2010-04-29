@@ -1,5 +1,6 @@
 #include "vision.h"
 
+
 #define inbounds(x,y) ( ((x)>0 &&(y)>0)&&((x)<rawImage->width-1&&(y)<rawImage->height-1) )
 #define CvDist(pa,pb) sqrt(((pa).x-(pb).x )*((pa).x-(pb).x )+((pa).y-(pb).y )*((pa).y-(pb).y ) )
 #define MAXSKIP 5
@@ -23,8 +24,8 @@ void Vision::gridScan(const KSegmentator::colormask_t color) {
 	int points[rawImage->width];
 	int continues = 0;
 	int threshold = 10;
-	int step = 4;
-	int ystep = 3;
+	int step = 5;
+	int ystep = 5;
 	unsigned int greenpixel;
 	KSegmentator::colormask_t tempcolor;
 	int ballpixel = -1;
@@ -88,7 +89,7 @@ void Vision::gridScan(const KSegmentator::colormask_t color) {
 	balldata_t b = locateBall(ballpixels);
 #ifdef DEBUGVISION
 	cout << "Ballpixelsize:" << ballpixels.size() << endl;
-	debugcout << b.x << " " << b.y << " " << b.r << endl;
+	cout << b.x << " " << b.y << " " << b.r << endl;
 #endif
 #define  VFov 34.8f
 #define  HFov 46.4f
@@ -96,21 +97,34 @@ void Vision::gridScan(const KSegmentator::colormask_t color) {
 	float x = (0.5 - (double) (b.x) / (double) rawImage->width) * HFov * TO_RAD;
 	float y = (0.5 - (double) (b.y) / (double) rawImage->height) * VFov * TO_RAD;
 	float r = b.r * (HFov / (double) rawImage->width)* TO_RAD;
+
 	if (b.r > 0) {
+	    /*
 		memory->insertData("kouretes/Ball/cx", x); // change in Head Yaw
 		memory->insertData("kouretes/Ball/cy", y); // change in Head Pitch
 		memory->insertData("kouretes/Ball/radius", r); // change in Head Pitch
-		memory->insertData("kouretes/Ball/found", 1.0f); // change
-	} else {
+		memory->insertData("kouretes/Ball/found", 1.0f); // change*/
+
+		//Fill message and publish
+#ifdef DEBUGVISION
+        cout<<"Vision:Publish Message"<<endl;
+#endif
+		trckmsg.set_cx(x);
+		trckmsg.set_cy(y);
+		trckmsg.set_radius(r);
+        trckmsg.set_topic("vision");
+		publish(&trckmsg);
+
+
+	}/* else {
 		memory->insertData("kouretes/Ball/found", .0f); // change
-	}
+	}*/
 }
 
 /**
  * Hard Decision: Is it good enough for a ball?
  */
 bool Vision::calculateValidBall(const CvPoint2D32f center, float radius, KSegmentator::colormask_t c) {
-	return true;
 	unsigned int ttl = 0, gd = 0;
 	float innerrad = radius * 0.707;
 	float ratio;
