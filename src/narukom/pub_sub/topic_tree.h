@@ -144,6 +144,7 @@ public:
       bool unsubscribe(Key& k, Data* )
       {
 	cout << "Topic Tree unsubscribe" << endl;
+	return false;
       }
 private:
 	TopicTreeNode<Key,Data>* root;

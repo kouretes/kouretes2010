@@ -168,7 +168,7 @@ void UdpMulticastChannel::send_nack(NetworkPacket* packet, boost::asio::ip::udp:
 		nack_msg.set_message_num( packet->header().message_num());
 		nack_msg.set_publisher("udp_multicast_channel");
 		nack_msg.set_timeout(100);
-		for(int i =0; i < missing->size(); i++)
+		for(unsigned int i =0; i < missing->size(); i++)
 			nack_msg.add_missing_packets(missing->at(i));
 		net_msg = new NetworkMessage(0,nack_msg);
 	}

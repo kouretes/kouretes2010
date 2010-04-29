@@ -47,7 +47,7 @@ Publisher::Publisher(const char* pub_name)
 }
 Publisher::Publisher(const Publisher& other) 
 {
-  MessageBuffer* tmp;
+  //MessageBuffer* tmp;
   publisher_name = other.getName();
   pub_msg_buf->copyFrom(*(other.getBuffer()) );
   pub_msg_queue = other.getQueue();

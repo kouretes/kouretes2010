@@ -120,11 +120,11 @@ NetworkMessage::NetworkMessage(google::protobuf::uint32 message_number,const goo
 			this->message_number = message_number;
 			create_from_message(&msg);
 		}
-NetworkPacket* NetworkMessage::get_packet(int index) const {
+NetworkPacket* NetworkMessage::get_packet(unsigned int index) const {
 			return index > packets.size() ? NULL : packets[index];
 		}
 
-void NetworkMessage::set_packet(int index, NetworkPacket* packet)
+void NetworkMessage::set_packet(unsigned int index, NetworkPacket* packet)
 		{
 			NetworkPacket* new_packet = packet->New();
 			new_packet->CopyFrom(*packet);
@@ -157,7 +157,7 @@ std::string* NetworkMessage::get_data_stream()const
 {
 // 	const std::vector<NetworkPacket*>::iterator it;
 	std::string* result = new std::string;
-	for(int i =   0; i < packets.size(); i++)
+	for(unsigned int i =   0; i < packets.size(); i++)
 	{
 		//std::cout << "packet size: " << packets[i]->byte_buffer().size() << std::endl;
 		*result +=packets[i]->byte_buffer();
