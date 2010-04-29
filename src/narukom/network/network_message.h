@@ -36,8 +36,8 @@ class NetworkMessage {
 		NetworkMessage(NetworkPacket* packet);
 		NetworkMessage(const NetworkHeader& network_header) ;
 		NetworkMessage(google::protobuf::uint32 message_number,const google::protobuf::Message& boo);
-		NetworkPacket* get_packet(int index) const ;
-		void set_packet(int index, NetworkPacket* new_packet);
+		NetworkPacket* get_packet(unsigned int index) const ;
+		void set_packet(unsigned int index, NetworkPacket* new_packet);
 		int get_number_of_packets() const;
 		void create_from_message(const google::protobuf::Message* msg);
 		bool isInitilized() const {return is_initialized;}

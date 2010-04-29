@@ -64,7 +64,7 @@ int main(int argc, char *argv[]) {
 
 	std::cout << "Try to connect to parent Broker at ip :" << parentBrokerIP << " and port : " << parentBrokerPort << std::endl;
 	std::cout << "Start the server bind on this ip :  " << brokerIP << " and port : " << brokerPort << std::endl;
-	std::cout<<"Starting Narukom:"<<endl;
+	std::cout << "Starting Narukom:" << endl;
 	Narukom* n = new Narukom();
 	MotionController* mc;
 	//SensorController* sc;
@@ -77,13 +77,14 @@ int main(int argc, char *argv[]) {
 
 	AL::ALPtr<AL::ALMemoryProxy> memory;
 	try {
-        std::cout<<"Creating ALBroker"<<endl;
+		std::cout << "Creating ALBroker" << endl;
 		broker = AL::ALBroker::createBroker(brokerName, brokerIP, brokerPort, parentBrokerIP, parentBrokerPort);
 		memory = broker->getMemoryProxy();
 
 		SleepMs(1000);
-		mc = new MotionController(broker,mq);
-        testV = new Vision(broker,mq);
+		testV = new Vision(broker, mq,true);
+		mc = new MotionController(broker, mq);
+
 		bc = new BehaviorController(broker,mq);
 		SleepMs(1000);
 
@@ -97,25 +98,21 @@ int main(int argc, char *argv[]) {
 	}
 	cout << "Starting Controllers..." << endl;
 
-
 	//	sc = new SensorController(mq);
 	//	lc= new LocController(mq);
-		//sc->start();
-		//lc->start();
-        mc->start();
-        testV->start();
-		bc->start();
+	//sc->start();
+	//lc->start();
+	mc->start();
+	testV->start();
+	bc->start();
 
 	//	lc->join();
-	//	bc->join();
-	//	sc->join();
-	while (1) {
-		SleepMs(100);
-	}
-
-	testV->join();
-    mc->join();
 	bc->join();
+	//	sc->join();
+	mc->join();
+	testV->join();
+
+	//bc->join();
 	cout << "EXITING TEST" << endl;
 	exit(0);
 # ifndef _WIN32
@@ -127,7 +124,6 @@ int main(int argc, char *argv[]) {
 
 	sigaction(SIGINT, &new_action, NULL);
 # endif
-
 
 # ifdef _WIN32
 	_terminationHandler( 0 );

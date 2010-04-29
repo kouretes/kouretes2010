@@ -14,7 +14,7 @@
 #include "alvalue.h"
 #include "messages/motion.pb.h"
 
-#define WEBOTS
+//#define WEBOTS
 
 
 class MotionController : public Thread, public Publisher, public Subscriber{
