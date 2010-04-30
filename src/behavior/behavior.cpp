@@ -1,14 +1,17 @@
 #include "behavior.h"
 #include "messages/motion.pb.h"
 #include "messages/VisionObservations.pb.h"
+#include "messages/SensorsMessage.pb.h"
+
 BehaviorController::BehaviorController(AL::ALPtr<AL::ALBroker> pbroker, MessageQueue* mq) :
 	Thread(false), Subscriber("BehaviorController"), Publisher("BehaviorController") {
 	//cout << "beh Constructor" << endl;
 	if (mq != 0) {
-		//cout << "fooooooooooooooooooo" << endl;
 		mq->add_publisher(this);
 		mq->add_subscriber(this);
 		mq->subscribe("vision", this, 0);
+		mq->subscribe("sensors", this, 0);
+
 	}
 	try {
 		memory = pbroker->getMemoryProxy();
@@ -19,9 +22,10 @@ BehaviorController::BehaviorController(AL::ALPtr<AL::ALBroker> pbroker, MessageQ
 	mot = new MotionMessage();
 	mot->add_parameter(0.0f);
 	mot->add_parameter(0.0f);
-	//TestMessage* tt = new TestMessage();
-	//tt->set_topic("localization");
-	//Publisher::publish(tt);
+	mot->add_parameter(0.0f);
+	mot->add_parameter(0.0f);
+	mot->add_parameter(0.0f);
+
 	cout << "Behavior Controller Initialized" << endl;
 }
 
@@ -30,43 +34,9 @@ void BehaviorController::run() {
 	while (sub_buf->size() > 0) {
 		process_messages();
 	}
-	SleepMs(10);
-	//else
-	//	{
-	//cout << "create traffic" << endl;
-	//	TestMessage* tt = new TestMessage();
-	//	tt->set_topic("localization");
-	//Publisher::publish(tt);
-	//delete tt;
-	//}
-	//cout << "behavior " << endl;
+	SleepMs(30);
 
-
-	//while (true) {
-
-	/*if ((float) memory->getData("kouretes/Ball/found") == 1) {
-
-	 float overshootfix = (float) memory->getData("kouretes/Ball/radius");
-	 overshootfix = 0.8 * (0.4f - overshootfix);
-	 cout << "Overshoot Value: " << overshootfix << endl;
-	 float cx = memory->getData("kouretes/Ball/cx");
-	 float cy = memory->getData("kouretes/Ball/cy");
-	 if (abs(cx) > 0.015 && abs(cy) > 0.015) {
-	 //Sending command to motion
-	 mot->set_topic("motion");
-	 mot->set_command("changeHead");
-	 mot->add_parameter(0.85f * overshootfix * (cx));
-	 mot->add_parameter(-1.1f * overshootfix * (cy));
-	 Publisher::publish(mot);
-	 }
-
-	 cout << "Ball Found ole " << endl;
-	 cout << "At Cx " << (float) memory->getData("kouretes/Ball/cx") << " Cy: " << (float) memory->getData("kouretes/Ball/cy") << endl;
-	 }*/
-
-	//}
 	boost::thread::yield();
-
 }
 
 void BehaviorController::process_messages() {
@@ -74,17 +44,17 @@ void BehaviorController::process_messages() {
 	google::protobuf::Message* cur = sub_buf->remove_head();
 	//cout<<"ProcessMessages"<<endl;
 	if (cur != NULL) {
-		cout << "ProcessMessages found message" << endl;
+		//cout << "ProcessMessages found message" << endl;
 		if (cur->GetTypeName() == "BallTrackMessage") {
 
 			BallTrackMessage * bmsg = static_cast<BallTrackMessage*> (cur);
 
 			float overshootfix = bmsg->radius();
 			overshootfix = 2 * (0.4f - overshootfix);
-			cout << "Overshoot Value: " << overshootfix << endl;
+			//cout << "Overshoot Value: " << overshootfix << endl;
 			float cx = bmsg->cx();
 			float cy = bmsg->cy();
-			cout << "I want the freaking head to move towards (cx,cy):" << 0.9f * (cx) << " " << -0.9f * (cy) << endl;
+			//cout << "I want the freaking head to move towards (cx,cy):" << 0.9f * (cx) << " " << -0.9f * (cy) << endl;
 
 			if (fabs(cx) > 0.015 || fabs(cy) > 0.015) {
 				//Sending command to motion
@@ -95,24 +65,39 @@ void BehaviorController::process_messages() {
 				Publisher::publish( mot);
 				cout << "I realy want the freaking head to move towards (cx,cy):" << 0.9f * (cx) << " " << -0.9f * (cy) << endl;
 			}
-			//if (abs(cx) > 0.015 && abs(cy) > 0.015) {
-			//cout<<"Track Ball changeHead"<<endl;
-			//memory->insertData("kouretes/HeadCommand", AL::ALValue("changeHead"));
-			//memory->insertData("kouretes/HeadParam1", 0.85f * overshootfix * (cx)); // change in Head Yaw
-			//memory->insertData("kouretes/HeadParam2", -1.1f * overshootfix * (cy)); // change in Head Pitch
-			//}
-			//}
-
 			cout << "Ball Found ole " << endl;
 			//cout << "At Cx " << (float) memory->getData("kouretes/Ball/cx") << " Cy: " << (float) memory->getData("kouretes/Ball/cy") << endl;
 
 		}
+
+		if (cur->GetTypeName() == "HeadJointSensorsMessage") {
+			//cout << "Received HeadJointSensorMessage" << endl;
+			HeadJointSensorsMessage * hjsm = static_cast<HeadJointSensorsMessage*> (cur);
+			//cout << "My headjoint  :" << hjsm->sensordata(0).sensorname() << " has value  " << hjsm->sensordata(0).sensorvalue() << endl;
+			SensorPair HeapYaw = hjsm->sensordata(0);
+			SensorPair HeapPitch = hjsm->sensordata(1);
+
+			float X, Y, theta;
+			//Calculate approach
+			X = 0; Y= 0; theta = 0;
+			//Check max values !
+			if (fabs(HeapYaw.sensorvalue()) > 0.06) {
+				theta = HeapYaw.sensorvalue() * 0.5*(0.6 -fabs(HeapPitch.sensorvalue()));
+			}
+			if (fabs(HeapPitch.sensorvalue()) < 0.487) {
+				X = 0.6 * (0.5 - HeapPitch.sensorvalue());
+				Y = HeapYaw.sensorvalue()*0.6 * (1.4 - fabs(HeapYaw.sensorvalue()));
+			}
+
+			mot->set_topic("motion");
+			mot->set_command("setWalkTargetVelocity");
+			mot->set_parameter(0,X);
+			mot->set_parameter(1,Y);
+			mot->set_parameter(2,theta);
+			mot->set_parameter(3,1.3-fabs(HeapPitch.sensorvalue()));
+			//cout << "SEnding Demo Commands  setWalkTargetVelocity " << endl;
+			Publisher::publish(mot);
+		}
 		delete cur;
 	}
-
-	//TestMessage* tm = (TestMessage*) sub_buf->remove_head();
-	//cout << "I received a message from " << tm->publisher() << " with counter " << tm->counter() << endl;
-	//tm->set_counter(tm->counter() + 1);
-	//tm->set_topic("motion");
-	//publish(tm);
 }

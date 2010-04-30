@@ -1,0 +1,5 @@
+include(${KOURETES_DIR}/cmakemodules/bootstrap.cmake)
+use(NAOQI-PLUGINS-TOOLS)
+#target_link_libraries(ObstacleAvoidance narukom)
+add_library(ObstacleAvoidance ObstacleAvoidance.cpp)
+use_lib(ObstacleAvoidance ALCOMMON ALVALUE ALMATH LIBCORE TOOLS)

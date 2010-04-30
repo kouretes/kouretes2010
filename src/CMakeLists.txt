@@ -29,9 +29,11 @@ add_subdirectory(behavior)
 MESSAGE( STATUS "Localization")
 add_subdirectory(localization)
 
+MESSAGE( STATUS "ObstaclesAvoidance")
+add_subdirectory(ObstacleAvoidance)
 
 add_library(kouretes_lib krobot.cpp)
 add_executable(kouretes_bin krobot.cpp)
 
-target_link_libraries(kouretes_bin messages narukom motion vision behavior sensors localization )
+target_link_libraries(kouretes_bin messages narukom motion vision behavior sensors localization ObstacleAvoidance )
 use_lib(kouretes_bin ALCOMMON ALVALUE ALMATH LIBCORE TOOLS )
