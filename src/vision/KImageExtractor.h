@@ -34,22 +34,23 @@ using namespace std;
  */
 class KImageExtractor : public Publisher
 {
-	public:
-		KImageExtractor(AL::ALPtr<AL::ALBroker> pbroker, MessageQueue *mq);
+public:
+    KImageExtractor(AL::ALPtr<AL::ALBroker> pbroker, MessageQueue *mq);
 
-		~KImageExtractor();
-		//Get new Image from hardware
-		struct timespec fetchImage(IplImage *img);
-		//Create new space for image
-		IplImage *allocateImage();
-        float calibrateCamera(int sleeptime=2500,int exp=50);
-	private:
-		AL::ALPtr<AL::ALProxy> c;//Camera proxy to naoqi
-		//Name used when subscribing Generic Video Module
-		std::string GVM_name;
-		int resolution;//Current Resolution
-		int cSpace;// Current Colorspace
-		bool doneSubscribe;//Initializations done?
+    ~KImageExtractor();
+    //Get new Image from hardware
+    struct timespec fetchImage(IplImage *img);
+    //Create new space for image
+    IplImage *allocateImage();
+    float calibrateCamera(int sleeptime=1500,int exp=10);
+    int getCamera();
+private:
+    AL::ALPtr<AL::ALProxy> c;//Camera proxy to naoqi
+    //Name used when subscribing Generic Video Module
+    std::string GVM_name;
+    int resolution;//Current Resolution
+    int cSpace;// Current Colorspace
+    bool doneSubscribe;//Initializations done?
 
 };
 

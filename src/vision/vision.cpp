@@ -17,6 +17,11 @@ void Vision::testrun()
 
     //cout << "fetchImage" << endl;
     struct timespec t = ext.fetchImage(rawImage);
+    if (ext.getCamera()==1)//bottom cam
+        seg=segbottom;
+    else
+        seg=segtop;
+
 #ifdef DEBUGVISION
     cout << "ImageTimestamp:"<< t.tv_sec << " " << t.tv_nsec << endl;
 #endif
@@ -47,7 +52,7 @@ KSegmentator::colormask_t Vision::doSeg(int x, int y)
 }
 
 Vision::Vision(AL::ALPtr<AL::ALBroker> pbroker, MessageQueue *mq,bool gui) :Publisher("Vision"),
-       cvHighgui(gui), ext(pbroker,mq),type(VISION_CSPACE)
+        cvHighgui(gui), ext(pbroker,mq),type(VISION_CSPACE)
 {
     cout << "Vision():" ;//<< endl;
     rawImage = ext.allocateImage();
@@ -58,15 +63,23 @@ Vision::Vision(AL::ALPtr<AL::ALBroker> pbroker, MessageQueue *mq,bool gui) :Publ
     }
     //memory = pbroker->getMemoryProxy();
 
-    ifstream *config = new ifstream("segmentation.conf");
-    seg = new KSegmentator(*config);//TODO PATH!!!
+    ifstream *config = new ifstream("segbot.conf");
+    segbottom = new KSegmentator(*config);//TODO PATH!!!
+    config->close();
+    delete config;
+    config = new ifstream("segtop.conf");
+    segtop = new KSegmentator(*config);//TODO PATH!!!
+    config->close();
+    delete config;
+
     cout<<"Add publisher"<<endl;
     if (mq!=NULL)
         mq->add_publisher(this);
 
     cout<<"Start calibration"<<endl;
     float scale= ext.calibrateCamera();
-    seg->setLumaScale(scale);
+    segbottom->setLumaScale(1/scale);
+    segtop->setLumaScale(1/scale);
     cout<<"Done!"<<endl;
 
 
@@ -89,7 +102,7 @@ void Vision::gridScan(const KSegmentator::colormask_t color)
     int points[rawImage->width];
     int continues = 0;
     int threshold = 10;
-    int step = 5;
+    int step = 2;
     int ystep = 5;
     unsigned int greenpixel;
     KSegmentator::colormask_t tempcolor;

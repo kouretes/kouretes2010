@@ -51,6 +51,8 @@ private:
     //Extractor Object, to get a new image
     KImageExtractor ext;
     KSegmentator *seg;
+    KSegmentator *segbottom;
+    KSegmentator *segtop;
     int type;//Colorspace fourCC
     //Raw Input Image
     IplImage *rawImage;

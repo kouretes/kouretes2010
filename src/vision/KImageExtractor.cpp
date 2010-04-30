@@ -206,8 +206,8 @@ float KImageExtractor::calibrateCamera(int sleeptime,int exp)
     MotionMessage mot;
     mot.add_parameter(0.0f);
     mot.add_parameter(0.0f);
-	mot.set_topic("motion");
-	mot.set_command("setHead");
+    mot.set_topic("motion");
+    mot.set_command("setHead");
 
     //mot->set_parameter(0, 0.9f * overshootfix * (cx));
     //mot->set_parameter(1, -0.9f * overshootfix * (cy));
@@ -215,60 +215,31 @@ float KImageExtractor::calibrateCamera(int sleeptime,int exp)
 
     float scale=1;
     cout<<"Calibrate Start:"<<endl;
-    //names.push_back("HeadYaw");
-    //names.push_back("HeadPitch");
-
-    //pos.push_back(0.9);
-    //pos.push_back(0.9);
-
-    //m->callVoid("gotoBodyStiffness",1.0,1.0,1);
-    //m->callVoid("setStiffnesses",names,pos);
-    //m->callVoid("gotoBodyStiffness",1.0,1.0,1);,,
-
-    // cout<<(float)m->call<float>("getAngle","HeadYaw")<<" "<<(float)m->call<float>("getAngle","HeadPitch")<<endl;
-    //SleepMs(1000);
-
-
-
-
 
     cout<<"Auto:"<<endl;
     try
     {
 
-
-
         c->callVoid( "setParam", kCameraSelectID, 1);
-
         c->callVoid( "setParam", kCameraExposureCorrectionID,0);
         SleepMs(1);
 
-
-        //Start auto detect
-
-
-
-        //pos.clear();
+        //Move head to the left
         mot.set_parameter(0,1.57);
         mot.set_parameter(1,0.22);
         publish(&mot);
-        //pos.push_back(1.57);
-        //pos.push_back(0.22);
 
-        //m->callVoid("setAngles",names,pos,0.8);
         SleepMs(100);
-
 
         c->callVoid( "setParam", kCameraAutoGainID, 1);
         c->callVoid( "setParam", kCameraAutoExpositionID,1);
         c->callVoid( "setParam", kCameraAutoWhiteBalanceID,1);
 
+        //Wait for autoconf
         SleepMs(sleeptime);
 
+        //Get Bottom camera settings
 
-
-        rchromaL=c->call<int>( "getParam", kCameraRedChromaID);
-        bchromaL=c->call<int>( "getParam", kCameraBlueChromaID);
         gainL=c->call<int>( "getParam", kCameraGainID);
         eL=c->call<int>( "getParam", kCameraExposureID);
 
@@ -278,52 +249,37 @@ float KImageExtractor::calibrateCamera(int sleeptime,int exp)
         c->callVoid( "setParam", kCameraAutoWhiteBalanceID,0);
 
 
+        cout<<"Left settings:"<<" "<< gainL<< endl;
 
-
-        cout<<"Left settings:"<<rchromaL<<" "<<bchromaL<<" "<<" "<< gainL<< endl;
-
-        //cout<<"Scale:"<<scale<<endl;
-        //cout<<exp*scale<<" "<<exp<<" " <<endl;
-        //GET BOTTOM CAMERA SETTINGS!!!
-
-
-        //pos.clear();
-        //pos.push_back(-1.57);
-        //pos.push_back(0.22);
         mot.set_parameter(0,-1.57);
         mot.set_parameter(1,0.22);
         publish(&mot);
         //m->callVoid("setAngles",names,pos,0.8);
         SleepMs(100);
 
-
         c->callVoid( "setParam", kCameraAutoGainID, 1);
         c->callVoid( "setParam", kCameraAutoExpositionID,1);
         c->callVoid( "setParam", kCameraAutoWhiteBalanceID,1);
+        //wait for autoconf
         SleepMs(sleeptime);
 
 
 
         //GET BOTTOM CAMERA SETTINGS!!!
-        rchromaR=c->call<int>( "getParam", kCameraRedChromaID);
-        bchromaR=c->call<int>( "getParam", kCameraBlueChromaID);
+
         gainR=c->call<int>( "getParam", kCameraGainID);
         eR=c->call<int>( "getParam", kCameraExposureID);
 
         c->callVoid( "setParam", kCameraAutoGainID, 0);
         c->callVoid( "setParam", kCameraAutoExpositionID,0);
-        c->callVoid( "setParam", kCameraAutoWhiteBalanceID,0);
+        //Since now we`ll need again the wb correction, leave it on
+        //c->callVoid( "setParam", kCameraAutoWhiteBalanceID,0);
 
-
-
-
-
-        cout<<"Right settings:"<<rchromaR<<" "<<bchromaR<<" "<<" "<< gainR<< endl;
+        cout<<"Right settings:"<<" "<< gainR<< endl;
         //============================
-        // Final settings!
+        // Final Exposure  settings!
         //============================
-        redchroma=(rchromaL+rchromaR)/2;
-        bluechroma=(bchromaL+bchromaR)/2;
+
         if (eL<eR)
         {
             gain=gainL;
@@ -341,22 +297,45 @@ float KImageExtractor::calibrateCamera(int sleeptime,int exp)
             scale=log((exp*510)/33)/log(e);
             cout<<"Scaling  exposure:"<<(exp*510)/33<<" "<<e<<endl;
             e=(exp*510)/33;
-            //cout<<"Old Gain:"<<gain;
-            //int hbits=gain&224;
-            //int oldgain=gain;
-            //gain=((float)(gain&31))/scale;
-            //gain=gain|hbits;
-            //cout<<"Old Gain:"<<gain<<endl;
-            //scale=((float)gain)/oldgain*1.0;
 
         }
         cout<<"Scaling  exposure:"<<(exp*510)/33<<" "<<e<<endl;
         gain=gainL<gainR?gainL:gainR;
+
         //redchroma=128-((128.0-redchroma)*0.95);
         //bluechroma=128-((128.0-bluechroma)*0.95);
         //gain=((gain&31)/2)|(gain&32);
-        cout<<"Final settings:"<<redchroma<<" "<<bluechroma<<" "<<" "<< gain<< endl;
+        cout<<"Final Exposure settings:"<< exp<< gain<< endl;
 
+
+        //Start white balance calibration
+        //wait for autoconf
+        SleepMs(sleeptime);
+
+        rchromaR=c->call<int>( "getParam", kCameraRedChromaID);
+        bchromaR=c->call<int>( "getParam", kCameraBlueChromaID);
+
+//        c->callVoid( "setParam", kCameraAutoWhiteBalanceID,0);
+        cout<<"Right white balance settings:"<<rchromaR<<" "<<bchromaR<<endl;
+
+
+        //Move head to the left
+        mot.set_parameter(0,1.57);
+        mot.set_parameter(1,0.22);
+        publish(&mot);
+
+        SleepMs(100);
+        //wait for autoconf
+        SleepMs(sleeptime);
+        rchromaL=c->call<int>( "getParam", kCameraRedChromaID);
+        bchromaL=c->call<int>( "getParam", kCameraBlueChromaID);
+
+        c->callVoid( "setParam", kCameraAutoWhiteBalanceID,0);
+        cout<<"Left white balance settings:"<<rchromaL<<" "<<bchromaL<<endl;
+        redchroma=(rchromaL+rchromaR)/2;
+        bluechroma=(bchromaL+bchromaR)/2;
+
+        cout<<"Final White Balance Settings"<<redchroma<<" "<<bluechroma;
 
 
         c->callVoid( "setParam", kCameraSelectID, 1);
@@ -416,4 +395,10 @@ float KImageExtractor::calibrateCamera(int sleeptime,int exp)
     mot.set_parameter(1,-0.1);
     publish(&mot);
     return scale;
+}
+
+
+int KImageExtractor::getCamera()
+{
+    return c->call<int>( "getParam", kCameraSelectID);
 }
