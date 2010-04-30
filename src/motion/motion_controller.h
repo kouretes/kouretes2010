@@ -66,6 +66,8 @@ private:
 	
 	void loadActions();
 	AL::ALValue LieDown_names, LieDown_times, LieDown_keys;
+	AL::ALValue LeftKick_names, LeftKick_times, LeftKick_keys;
+	AL::ALValue RightKick_names, RightKick_times, RightKick_keys;
 
 };
 
