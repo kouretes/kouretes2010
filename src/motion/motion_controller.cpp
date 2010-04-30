@@ -146,64 +146,75 @@ void MotionController::mglrun() {
 		}
 
 		/* Check if there is a command to execute */
-		process_messages();
-		if (mm == NULL)
-			return;
+		bool headcommand=false;
+		bool bodycommand=false;
+		while(1)
+		{
+            process_messages();
+            if (mm == NULL)
+                return;
 
-		if (mm->command() == "walkTo") {
-			walkParam1 = mm->parameter(0);
-			walkParam2 = mm->parameter(1);
-			walkParam3 = mm->parameter(2);
-			std::cout << mm->command() << " with parameters " << walkParam1 << " " << walkParam2 << " " << walkParam3 << std::endl;
-			walkPID = motion->post.walkTo(walkParam1, walkParam2, walkParam3);
-			std::cout << "   Walk ID: " << walkPID << std::endl;
-		} else if (mm->command() == "setWalkTargetVelocity") {
-			walkParam1 = mm->parameter(0);
-			walkParam2 = mm->parameter(1);
-			walkParam3 = mm->parameter(2);
-			walkParam4 = mm->parameter(3);
-			std::cout << mm->command() << " with parameters " << walkParam1 << " " << walkParam2 << " " << walkParam3 << " " << walkParam4 << std::endl;
-			walkPID = motion->post.setWalkTargetVelocity(walkParam1, walkParam2, walkParam3, walkParam4);
-			std::cout << "   Walk ID: " << walkPID << std::endl;
-		} else if (mm->command() == "setHead") {
-			headParam1 = mm->parameter(0);
-			headParam2 = mm->parameter(1);
-			std::cout << mm->command() << " with parameters " << headParam1 << " " << headParam2 << std::endl;
-			names.arraySetSize(2);
-			values.arraySetSize(2);
-			names[0] = "HeadYaw";
-			values[0] = headParam1;
-			names[1] = "HeadPitch";
-			values[1] = headParam2;
-			float fractionMaxSpeed = 0.8;
-			headPID = motion->post.setAngles(names, values, fractionMaxSpeed);
-			std::cout << "   Head ID: " << headPID << std::endl;
-		} else if (mm->command() == "changeHead") {
-			headParam1 = mm->parameter(0);
-			headParam2 = mm->parameter(1);
-			std::cout << mm->command() << " with parameters " << headParam1 << " " << headParam2 << std::endl;
-			names.arraySetSize(2);
-			values.arraySetSize(2);
-			names[0] = "HeadYaw";
-			values[0] = headParam1;
-			names[1] = "HeadPitch";
-			values[1] = headParam2;
-			float fractionMaxSpeed = 0.2;
-			headPID = motion->post.changeAngles(names, values, fractionMaxSpeed);
-			std::cout << "   Head ID: " << headPID << std::endl;
-		} else { /* Action command */
-			if (headPID != 0) {
-				motion->post.killTask(headPID);
-				headPID = 0;
-			}
-			walkPID = motion->post.setWalkTargetVelocity(0.0, 0.0, 0.0, 0.0); // stop walk
-			motion->waitUntilWalkIsFinished();
-			walkPID = 0;
+            if (mm->command() == "walkTo" && !bodycommand) {
+                walkParam1 = mm->parameter(0);
+                walkParam2 = mm->parameter(1);
+                walkParam3 = mm->parameter(2);
+                std::cout << mm->command() << " with parameters " << walkParam1 << " " << walkParam2 << " " << walkParam3 << std::endl;
+                walkPID = motion->post.walkTo(walkParam1, walkParam2, walkParam3);
+                std::cout << "   Walk ID: " << walkPID << std::endl;
+                bodycommand=true;
+            } else if (mm->command() == "setWalkTargetVelocity" && !bodycommand) {
+                walkParam1 = mm->parameter(0);
+                walkParam2 = mm->parameter(1);
+                walkParam3 = mm->parameter(2);
+                walkParam4 = mm->parameter(3);
+                std::cout << mm->command() << " with parameters " << walkParam1 << " " << walkParam2 << " " << walkParam3 << " " << walkParam4 << std::endl;
+                walkPID = motion->post.setWalkTargetVelocity(walkParam1, walkParam2, walkParam3, walkParam4);
+                std::cout << "   Walk ID: " << walkPID << std::endl;
+                bodycommand=true;
+            } else if (mm->command() == "setHead" && !headcommand) {
+                headParam1 = mm->parameter(0);
+                headParam2 = mm->parameter(1);
+                std::cout << mm->command() << " with parameters " << headParam1 << " " << headParam2 << std::endl;
+                names.arraySetSize(2);
+                values.arraySetSize(2);
+                names[0] = "HeadYaw";
+                values[0] = headParam1;
+                names[1] = "HeadPitch";
+                values[1] = headParam2;
+                float fractionMaxSpeed = 0.8;
+                headPID = motion->post.setAngles(names, values, fractionMaxSpeed);
+                std::cout << "   Head ID: " << headPID << std::endl;
+                headcommand=true;
+            } else if (mm->command() == "changeHead" && !headcommand) {
+                headParam1 = mm->parameter(0);
+                headParam2 = mm->parameter(1);
+                std::cout << mm->command() << " with parameters " << headParam1 << " " << headParam2 << std::endl;
+                names.arraySetSize(2);
+                values.arraySetSize(2);
+                names[0] = "HeadYaw";
+                values[0] = headParam1;
+                names[1] = "HeadPitch";
+                values[1] = headParam2;
+                float fractionMaxSpeed = 0.2;
+                headPID = motion->post.changeAngles(names, values, fractionMaxSpeed);
+                std::cout << "   Head ID: " << headPID << std::endl;
+                headcommand=true;
+            } else { /* Action command */
+                if (headPID != 0) {
+                    motion->post.killTask(headPID);
+                    headPID = 0;
+                }
+                walkPID = motion->post.setWalkTargetVelocity(0.0, 0.0, 0.0, 0.0); // stop walk
+                motion->waitUntilWalkIsFinished();
+                walkPID = 0;
 
-			//actionPID = motion->post.xxxxxxxxxxxxxx
-			if (mm->command() == "lieDown") {
-				actionPID = motion->post.angleInterpolationBezier(LieDown_names, LieDown_times, LieDown_keys);
-			}
+                //actionPID = motion->post.xxxxxxxxxxxxxx
+                if (mm->command() == "lieDown") {
+                    actionPID = motion->post.angleInterpolationBezier(LieDown_names, LieDown_times, LieDown_keys);
+                }
+                headcommand=true;
+                bodycommand=true;
+            }
 		}
 
 	}
