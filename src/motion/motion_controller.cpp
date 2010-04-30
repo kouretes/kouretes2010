@@ -56,7 +56,7 @@ void MotionController::process_messages() {
 	if (mm != NULL)
 		delete mm;
 	if (sub_buffer->size() > 0) {
-		mm = (MotionMessage*) sub_buffer->remove_head();
+		mm = (MotionMessage*) sub_buffer->remove_tail();
 		cout << "I received a message from " << mm->publisher() << " sub_buffer->size()  " << sub_buffer->size()  << endl;
 	} else
 		mm = NULL;

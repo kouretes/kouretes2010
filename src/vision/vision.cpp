@@ -88,93 +88,69 @@ void Vision::gridScan(const KSegmentator::colormask_t color)
 {
     //Horizontal + Vertical Scan
     ballpixels.clear();
-    int diff = 0;
-    int diffprev = -1;
-    int min1 = -1;
-    int min2 = -1;
+    ygoalpost.clear();
+    bgoalpost.clear();
+
+
     CvPoint tmpPoint;
-    int prevMinAth = 0;
 
-    int away = 80;
-    int flag = 0;
-    int foundcolor = 0; //0 not found negative found but lost possitive found
 
-    int points[rawImage->width];
-    int continues = 0;
-    int threshold = 10;
-    int step = 2;
-    int ystep = 5;
-    unsigned int greenpixel;
+    //int points[rawImage->width];
+    int step = 3;
+    int ystep = 2;
+
     KSegmentator::colormask_t tempcolor;
-    int ballpixel = -1;
-    unsigned int whitegreenpixelsthreshold = 2;
+    //int ballpixel = -1;
+    unsigned int ballthreshold = 2;
+    unsigned int goalposthreshold= 5;
     unsigned int cntwhitegreenpixels = 0;
+    unsigned int cntwhitegreenorangepixels=0;
     int j;
     for (int i = 0; i < rawImage->width; i = i + step)
     {
         //Thru Horizon Possibly someday
-        points[i] = -1;
-        continues = 0;
+
         cntwhitegreenpixels = 0;
-        ballpixel = -1;
+        cntwhitegreenorangepixels=0;
+        // ballpixel = -1;
 
         for (j = rawImage->height - 2; j > 0; j = j - ystep)
         {
             //image start from top left
             tempcolor = doSeg(i, j);
 
-            if (ballpixel < 0)
+            if (tempcolor == white || tempcolor == green)
             {
-                if (tempcolor == white || tempcolor == green)
-                    cntwhitegreenpixels++;
-                if (tempcolor == orange && cntwhitegreenpixels >= whitegreenpixelsthreshold)
-                {
-                    tmpPoint.x = i;
-                    tmpPoint.y = j;
-                    ballpixels.push_back(tmpPoint);
-                    ballpixel = j;
-                }
+                cntwhitegreenpixels++;
+                cntwhitegreenorangepixels++;
             }
-            if (tempcolor == color)
-            {
-                //				if (j == (height - 3) || i == 1 || i == (width - 1)) // to close to the frame of the image
-                //					break;
-                //					///cout << "Color " << color << " found at w:" << i << " h: " << j << endl;
-                continues++;
-                //make sure that this color continues little more pixels above and it is not segmentation error
-                if (continues == threshold)
-                {
-                    points[i] = j + threshold * ystep - 1;
-                    break;
-                }
-            }
-            else if (continues > 0)
-            {
-                continues = 0;
-            }
-            else   //TODO: Below is gui related stuff
-            {
-                //CvPoint point = cvPoint(i, j);
-                //cvLine(fIplSegImage, point, point, cvScalar(0, 40 * color, 50 * color), 1, 0, 0);
-            }
-        }
-        for (; j > 0; j = j - ystep)
-        {
-            tempcolor = doSeg(i, j);
+            if (tempcolor==orange)
+                cntwhitegreenorangepixels++;
 
-            if (ballpixel < 0)
+            if (tempcolor == orange && cntwhitegreenpixels >= ballthreshold)
             {
-                if (tempcolor == white || tempcolor == green)
-                    cntwhitegreenpixels++;
-                if (tempcolor == orange && cntwhitegreenpixels >= whitegreenpixelsthreshold)
-                {
-                    tmpPoint.x = i;
-                    tmpPoint.y = j;
-                    ballpixels.push_back(tmpPoint);
-                    ballpixel = j;
-                    break;
-                }
+                tmpPoint.x = i;
+                tmpPoint.y = j;
+                ballpixels.push_back(tmpPoint);
+                cntwhitegreenpixels=0;
+                //continue;
+                //ballpixel = j;
             }
+            if (tempcolor==yellow && cntwhitegreenorangepixels >= goalposthreshold)
+            {
+                tmpPoint.x = i;
+                tmpPoint.y = j;
+                ygoalpost.push_back(tmpPoint);
+                cntwhitegreenorangepixels=0;
+            }
+            if (tempcolor==skyblue&& cntwhitegreenorangepixels >= goalposthreshold)
+            {
+                tmpPoint.x = i;
+                tmpPoint.y = j;
+                bgoalpost.push_back(tmpPoint);
+                cntwhitegreenorangepixels=0;
+            }
+
         }
     }
     balldata_t b = locateBall(ballpixels);
@@ -232,7 +208,7 @@ bool Vision::calculateValidBall(const CvPoint2D32f center, float radius, KSegmen
             ttl++;
         }
     ratio = ((float) gd) / ttl;
-    if (ratio < 0.75)
+    if (ratio < 0.8)
         return false;
     //Outer circle
     gd = 0;
@@ -254,7 +230,7 @@ bool Vision::calculateValidBall(const CvPoint2D32f center, float radius, KSegmen
             ttl++;
         }
     ratio = ((float) gd) / ttl;
-    if (ratio < 0.3 || ratio > 0.7)
+    if (ratio < 0.35 || ratio > 0.65)
         return false;
 
     return true;
@@ -509,5 +485,5 @@ void Vision::cvShowSegmented()
      pos[0]=pos[0]+0.1;
      pos[1]=pos[1]+0.1;
      m->callVoid("setAngles",names,pos,0.8);*/
-    int k = cvWaitKey(4);
+    cvWaitKey(4);
 }

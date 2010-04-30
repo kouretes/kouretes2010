@@ -59,6 +59,8 @@ private:
     IplImage *segIpl;
     //Ball Detection related
     std::vector<CvPoint> ballpixels;
+    std::vector<CvPoint> ygoalpost;
+    std::vector<CvPoint> bgoalpost;
 
     void gridScan(const KSegmentator::colormask_t color);
     bool calculateValidBall(const CvPoint2D32f center, float radius, KSegmentator::colormask_t c);
