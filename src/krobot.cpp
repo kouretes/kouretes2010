@@ -67,10 +67,11 @@ int main(int argc, char *argv[]) {
 	std::cout << "Starting Narukom:" << endl;
 	Narukom* n = new Narukom();
 	MotionController* mc;
-	//SensorController* sc;
+	SensorController* sc;
 	BehaviorController* bc;
 	//LocController* lc;
 	Vision* testV;
+
 	MessageQueue *mq = n->get_message_queue();
 
 	AL::ALBroker::Ptr broker;
@@ -81,14 +82,11 @@ int main(int argc, char *argv[]) {
 		broker = AL::ALBroker::createBroker(brokerName, brokerIP, brokerPort, parentBrokerIP, parentBrokerPort);
 		memory = broker->getMemoryProxy();
 
-		SleepMs(1000);
 
 		mc = new MotionController(broker, mq);
-		bc = new BehaviorController(broker,mq);
+		bc = new BehaviorController(broker, mq);
 
-
-
-		SleepMs(1000);
+		SleepMs(200);
 
 	} catch (AL::ALError &e) {
 		delete n;
@@ -100,22 +98,24 @@ int main(int argc, char *argv[]) {
 	}
 	cout << "Starting Controllers..." << endl;
 
-	//	sc = new SensorController(mq);
 	//	lc= new LocController(mq);
-	//sc->start();
+
 	//lc->start();
 	mc->start();
-    testV = new Vision(broker, mq);
+	SleepMs(10);
+	testV = new Vision(broker, mq);
 	testV->start();
 	bc->start();
 
+	sc = new SensorController(broker, mq);
+	sc->start();
 	//	lc->join();
 	bc->join();
-	//	sc->join();
+	sc->join();
 	mc->join();
 	testV->join();
 
-	//bc->join();
+
 	cout << "EXITING TEST" << endl;
 	exit(0);
 # ifndef _WIN32

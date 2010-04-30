@@ -57,7 +57,7 @@ void MotionController::process_messages() {
 		delete mm;
 	if (sub_buffer->size() > 0) {
 		mm = (MotionMessage*) sub_buffer->remove_head();
-		cout << "I received a message from " << mm->publisher() << endl;
+		cout << "I received a message from " << mm->publisher() << " sub_buffer->size()  " << sub_buffer->size()  << endl;
 	} else
 		mm = NULL;
 	//boost::thread::yield();

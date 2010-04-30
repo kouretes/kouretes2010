@@ -14,7 +14,7 @@
 #include "albrokermanager.h"
 #include "alptr.h"
 #include "alvalue.h"
-class BehaviorController: public Thread, public Publisher, public Subscriber {
+class BehaviorController: public Thread, public Subscriber , public Publisher{
 	public:
 		BehaviorController(AL::ALPtr<AL::ALBroker> pbroker, MessageQueue* mq = 0);
 		void run();
