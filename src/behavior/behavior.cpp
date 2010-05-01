@@ -11,7 +11,6 @@ BehaviorController::BehaviorController(AL::ALPtr<AL::ALBroker> pbroker, MessageQ
 		mq->add_subscriber(this);
 		mq->subscribe("vision", this, 0);
 		mq->subscribe("sensors", this, 0);
-
 	}
 	try {
 		memory = pbroker->getMemoryProxy();
@@ -34,7 +33,7 @@ void BehaviorController::run() {
 	while (sub_buf->size() > 0) {
 		process_messages();
 	}
-	SleepMs(30);
+	SleepMs(100);
 
 	boost::thread::yield();
 }
@@ -74,29 +73,54 @@ void BehaviorController::process_messages() {
 			//cout << "Received HeadJointSensorMessage" << endl;
 			HeadJointSensorsMessage * hjsm = static_cast<HeadJointSensorsMessage*> (cur);
 			//cout << "My headjoint  :" << hjsm->sensordata(0).sensorname() << " has value  " << hjsm->sensordata(0).sensorvalue() << endl;
-			SensorPair HeapYaw = hjsm->sensordata(0);
-			SensorPair HeapPitch = hjsm->sensordata(1);
+			SensorPair HeadYaw = hjsm->sensordata(0);
+			SensorPair HeadPitch = hjsm->sensordata(1);
 
-			float X, Y, theta;
+			float X, Y, theta, freq;
 			//Calculate approach
-			X = 0; Y= 0; theta = 0;
+			X = 0;
+			Y = 0;
+			theta = 0;
+			bool readytokick = true;
 			//Check max values !
-			if (fabs(HeapYaw.sensorvalue()) > 0.06) {
-				theta = HeapYaw.sensorvalue() * 0.5*(0.6 -fabs(HeapPitch.sensorvalue()));
+			if (fabs(HeadYaw.sensorvalue()) > 0.06) {
+				theta = HeadYaw.sensorvalue() * 0.5 * (0.6 - fabs(HeadPitch.sensorvalue()));
+				readytokick = false;
 			}
-			if (fabs(HeapPitch.sensorvalue()) < 0.487) {
-				X = 0.6 * (0.5 - HeapPitch.sensorvalue());
-				Y = HeapYaw.sensorvalue()*0.6 * (1.4 - fabs(HeapYaw.sensorvalue()));
+			if (fabs(HeadPitch.sensorvalue()) < 0.485) {
+				X = 0.6 * (0.5 - HeadPitch.sensorvalue());
+				Y = HeadYaw.sensorvalue() * 0.6 * (1.4 - fabs(HeadYaw.sensorvalue()));
+				readytokick = false;
 			}
 
 			mot->set_topic("motion");
-			mot->set_command("setWalkTargetVelocity");
-			mot->set_parameter(0,X);
-			mot->set_parameter(1,Y);
-			mot->set_parameter(2,theta);
-			mot->set_parameter(3,1.3-fabs(HeapPitch.sensorvalue()));
-			//cout << "SEnding Demo Commands  setWalkTargetVelocity " << endl;
-			Publisher::publish(mot);
+			if (!readytokick) {
+				mot->set_command("setWalkTargetVelocity");
+
+				if (fabs(X) > 1.0)
+					X = (X > 0) ? 1 : -1;
+				if (fabs(Y) > 1.0)
+					Y = (Y > 0) ? 1 : -1;
+				if (fabs(theta) > 1.0)
+					theta = (theta > 0) ? 1 : -1;
+				freq = 1.3 - fabs(HeadPitch.sensorvalue());
+				if (fabs(freq) > 1.0)
+					freq = (freq > 0) ? 1 : -1;
+
+				mot->set_parameter(0, X);
+				mot->set_parameter(1, Y);
+				mot->set_parameter(2, theta);
+				mot->set_parameter(3, freq);
+				//cout << "SEnding Demo Commands  setWalkTargetVelocity " << endl;
+
+			} else {
+				cout << "Kicking" << endl;
+				if (HeadYaw.sensorvalue() > 0)
+					mot->set_command("leftKick");
+				else
+					mot->set_command("rightKick");
+			}
+			Publisher::publish( mot);
 		}
 		delete cur;
 	}

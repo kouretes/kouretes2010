@@ -103,7 +103,7 @@ int main(int argc, char *argv[]) {
 	//lc->start();
 	mc->start();
 	SleepMs(10);
-	testV = new Vision(broker, mq);
+	testV = new Vision(broker, mq,false);
 	testV->start();
 	bc->start();
 

@@ -7,7 +7,7 @@ MotionController::MotionController(AL::ALPtr<AL::ALBroker> pbroker, MessageQueue
 	} catch (AL::ALError& e) {
 		cout << "Error in getting motion proxy" << std::endl;
 	}
-	motion->setStiffnesses("Body", 1.0);
+	motion->setStiffnesses("Body", 0.9);
 	motion->setWalkArmsEnable(true, true);
 	//TODO motion->setMotionConfig([["ENABLE_FOOT_CONTACT_PROTECTION",True]]);
 	//TODO motion->setMotionConfig([["ENABLE_STIFFNESS_PROTECTION",True]]);

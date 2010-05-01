@@ -79,7 +79,7 @@ Vision::Vision(AL::ALPtr<AL::ALBroker> pbroker, MessageQueue *mq,bool gui) :Publ
     cout<<"Start calibration"<<endl;
     float scale= ext.calibrateCamera();
     segbottom->setLumaScale(1/scale);
-    segtop->setLumaScale(1/scale);
+//    segtop->setLumaScale(1/scale);
     cout<<"Done!"<<endl;
 
 
@@ -485,5 +485,5 @@ void Vision::cvShowSegmented()
      pos[0]=pos[0]+0.1;
      pos[1]=pos[1]+0.1;
      m->callVoid("setAngles",names,pos,0.8);*/
-    cvWaitKey(4);
+    cvWaitKey(10);
 }
