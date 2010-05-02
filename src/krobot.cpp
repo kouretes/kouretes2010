@@ -24,6 +24,7 @@
 #include "localization/localization.h"
 #include "behavior/behavior.h"
 #include "sensors/sensors.h"
+#include "communication/communication.h"
 #include "narukom.h"
 
 using namespace AL;
@@ -71,6 +72,7 @@ int main(int argc, char *argv[]) {
 	BehaviorController* bc;
 	//LocController* lc;
 	Vision* testV;
+        Communication* com;
 
 	MessageQueue *mq = n->get_message_queue();
 
@@ -79,13 +81,13 @@ int main(int argc, char *argv[]) {
 	AL::ALPtr<AL::ALMemoryProxy> memory;
 	try {
 		std::cout << "Creating ALBroker" << endl;
-		broker = AL::ALBroker::createBroker(brokerName, brokerIP, brokerPort, parentBrokerIP, parentBrokerPort);
-		memory = broker->getMemoryProxy();
+                broker = AL::ALBroker::createBroker(brokerName, brokerIP, brokerPort, parentBrokerIP, parentBrokerPort);
+        //	memory = broker->getMemoryProxy();
 
 
-		mc = new MotionController(broker, mq);
-		bc = new BehaviorController(broker, mq);
-
+                mc = new MotionController(broker, mq);
+                bc = new BehaviorController(broker, mq);
+                com = new Communication(broker,mq,"team_config.xml");
 		SleepMs(200);
 
 	} catch (AL::ALError &e) {
@@ -101,6 +103,7 @@ int main(int argc, char *argv[]) {
 	//	lc= new LocController(mq);
 
 	//lc->start();
+        
 	mc->start();
 	SleepMs(10);
 	testV = new Vision(broker, mq,false);
@@ -116,6 +119,7 @@ int main(int argc, char *argv[]) {
 	testV->join();
 
 
+//        com->join();
 	cout << "EXITING TEST" << endl;
 	exit(0);
 # ifndef _WIN32
