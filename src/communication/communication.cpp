@@ -6,7 +6,7 @@ Communication::Communication(AL::ALPtr<AL::ALBroker> pBroker,MessageQueue *mq, c
     lh = new LedHandler(pBroker,mq);
     gc->start();
     lh->start();
-    gc->join();
-    lh->join();
+    //gc->join();
+    //lh->join();
 
 }
