@@ -86,7 +86,7 @@ ALCALL int _createModule( AL::ALPtr<AL::ALBroker> pBroker )
     //	memory = broker->getMemoryProxy();
 
 
-            mc = new MotionController(broker, mq,true);
+            mc = new MotionController(broker, mq);
             bc = new BehaviorController(broker, mq);
             com = new Communication(broker,mq,"team_config.xml");
             SleepMs(200);
@@ -111,7 +111,7 @@ ALCALL int _createModule( AL::ALPtr<AL::ALBroker> pBroker )
     testV->start();
     bc->start();
 
-    sc = new SensorController(broker, mq,true);
+    sc = new SensorController(broker, mq);
     sc->start();
     //	lc->join();
 //    bc->join();
@@ -195,7 +195,7 @@ int main(int argc, char *argv[]) {
         //	memory = broker->getMemoryProxy();
 
 
-                mc = new MotionController(broker, mq,true);
+                mc = new MotionController(broker, mq);
                 bc = new BehaviorController(broker, mq);
                 com = new Communication(broker,mq,"team_config.xml");
 		SleepMs(200);
@@ -220,7 +220,7 @@ int main(int argc, char *argv[]) {
 	testV->start();
 	bc->start();
 
-        sc = new SensorController(broker, mq,true);
+        sc = new SensorController(broker, mq);
 	sc->start();
 	//	lc->join();
 	bc->join();
