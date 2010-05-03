@@ -1,5 +1,5 @@
 include(${KOURETES_DIR}/cmakemodules/bootstrap.cmake)
 use(NAOQI-PLUGINS-TOOLS)
 #target_link_libraries(sensors narukom)
-add_library(sensors sensors.cpp)
+add_library(sensors STATIC sensors.cpp)
 use_lib(sensors ALCOMMON ALVALUE ALMATH LIBCORE TOOLS)

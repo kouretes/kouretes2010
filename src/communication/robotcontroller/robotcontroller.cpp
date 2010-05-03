@@ -49,7 +49,7 @@ int  RobotController::extract_player_state(RoboCupGameControlData* data)
 void RobotController::run()
 {
     // cout <<"add: "<< (int)(&received_data) <<  " rd: " << received_data << " cbp " << chest_button_pressed << " rfb " << right_bumper_pressed << " lfb " << left_bumper_pressed << endl;
-    cout << "RC RUN" << endl;
+  //  cout << "RC RUN" << endl;
     bool changed = false;
     mx.Lock();
     if(received_data)
@@ -87,7 +87,7 @@ void RobotController::run()
     else
     {
 
-          cout << "In else" << endl;
+      //    cout << "In else" << endl;
         chest_button_pressed = memory->getData("button_pressed");
         left_bumper_pressed = memory->getData("lbumper_pressed");
         right_bumper_pressed = memory->getData("rbumper_pressed");

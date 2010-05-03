@@ -16,7 +16,7 @@ include_directories( ${NARUKOM_SYSTEM_INCLUDE_DIR}
 add_definitions(${TARGET_PLAT_DEFINITIONS})
 
 
-add_library(narukom SHARED narukom.cpp ${NARUKOM_SYSTEM_SRCS}  ${NARUKOM_PUB_SUB_SRCS}  ${NARUKOM_NETWORK_SRCS}
+add_library(narukom  STATIC narukom.cpp ${NARUKOM_SYSTEM_SRCS}  ${NARUKOM_PUB_SUB_SRCS}  ${NARUKOM_NETWORK_SRCS}
     ${NARUKOM_MESSAGES_SRCS}  )
 
 target_link_libraries(narukom ${PROTOBUF_LIBRARIES} ${ZLIB_LIBRARIES}  ${TICPP_LIBRARIES})

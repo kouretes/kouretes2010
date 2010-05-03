@@ -36,6 +36,7 @@ add_subdirectory(ObstacleAvoidance)
 
 add_library(kouretes_lib krobot.cpp)
 add_executable(kouretes_bin krobot.cpp)
-
+target_link_libraries(kouretes_lib messages narukom motion vision behavior sensors localization ObstacleAvoidance  communication)
 target_link_libraries(kouretes_bin messages narukom motion vision behavior sensors localization ObstacleAvoidance  communication)
 use_lib(kouretes_bin ALCOMMON ALVALUE ALMATH LIBCORE TOOLS )
+use_lib(kouretes_lib ALCOMMON ALVALUE ALMATH LIBCORE TOOLS )

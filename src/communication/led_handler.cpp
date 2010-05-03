@@ -14,7 +14,7 @@ void LedHandler::run()
 void LedHandler::process_messages()
 {
     MessageBuffer* buf = Subscriber::getBuffer();
-    cout << "led process" <<endl;
+  //  cout << "led process" <<endl;
     google::protobuf::Message* cur = buf->remove_head();
     while(cur != 0)
     {
@@ -96,7 +96,7 @@ void LedHandler::setLed(const std::string& device, const std::string& color)
 
 void LedHandler::setDcmChestColor(const string& color)
 {
-  cout << "chest to " << colors[color] << endl;
+ // cout << "chest to " << colors[color] << endl;
   leds->callVoid<string,int,float>("fadeRGB","ChestLeds",colors[color],0.01);
 }
 
