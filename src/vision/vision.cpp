@@ -3,8 +3,8 @@
 
 #define inbounds(x,y) ( ((x)>0 &&(y)>0)&&((x)<rawImage->width-1&&(y)<rawImage->height-1) )
 #define CvDist(pa,pb) sqrt(((pa).x-(pb).x )*((pa).x-(pb).x )+((pa).y-(pb).y )*((pa).y-(pb).y ) )
-#define MAXSKIP 5
-#define GLOBALSKIP  15
+#define MAXSKIP 3
+#define GLOBALSKIP 15
 
 void Vision::run()
 {
@@ -101,12 +101,16 @@ void Vision::gridScan(const KSegmentator::colormask_t color)
 
     KSegmentator::colormask_t tempcolor;
     //int ballpixel = -1;
-    unsigned int ballthreshold = 2;
-    unsigned int goalposthreshold= 5;
+    static unsigned int startx=0;
+    static unsigned int starty=0;
+    const unsigned int borderskip=3;
+    const unsigned int ballthreshold = 2;
+    const unsigned int goalposthreshold= 5;
     unsigned int cntwhitegreenpixels = 0;
     unsigned int cntwhitegreenorangepixels=0;
     int j;
-    for (int i = 0; i < rawImage->width; i = i + step)
+
+    for (int i = borderskip+startx; i < rawImage->width-borderskip; i = i + step)
     {
         //Thru Horizon Possibly someday
 
@@ -114,7 +118,7 @@ void Vision::gridScan(const KSegmentator::colormask_t color)
         cntwhitegreenorangepixels=0;
         // ballpixel = -1;
 
-        for (j = rawImage->height - 2; j > 0; j = j - ystep)
+        for (j = rawImage->height - borderskip- starty; j > borderskip; j = j - ystep)
         {
             //image start from top left
             tempcolor = doSeg(i, j);
@@ -153,6 +157,10 @@ void Vision::gridScan(const KSegmentator::colormask_t color)
 
         }
     }
+    //Update startings
+    startx=(startx+1)%step;
+    starty=(starty+1)%ystep;
+
     balldata_t b = locateBall(ballpixels);
 #ifdef DEBUGVISION
     cout << "Ballpixelsize:" << ballpixels.size() << endl;
@@ -390,7 +398,7 @@ CvPoint Vision::traceline(CvPoint start, CvPoint vel, KSegmentator::colormask_t 
         {
             latestValid = curr;
             skipcount = 0;
-            globalcount = 0;
+            //globalcount = 0;
         };
 
         if (skipcount > MAXSKIP || globalcount > GLOBALSKIP)
